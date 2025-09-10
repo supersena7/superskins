@@ -3,180 +3,218 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Global Trucking Hub — Super Sena</title>
-  <meta name="description" content="Plataforma pioneira para ETS2: matchmaking de comboios, marketplace de jobs, estúdio de skins 2D/3D e telemetria para streamers." />
+  <title>Global Trucking Hub — Super Sena (Skin Studio & Hub)</title>
+  <meta name="description" content="Protótipo: Matchmaking de comboios + Skin Studio 4096x4096 para ETS2 — Super Sena" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    /* Reset simples */
-    *{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --bg:#071018; --card:#0f2a39; --accent:#f0b429; --muted:#9fb3bf; --glass:rgba(255,255,255,0.04);
-      --maxw:1100px;
-      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      --bg:#071018; --card:#071a22; --accent:#f0b429; --muted:#98b4bb; --glass:rgba(255,255,255,0.03);
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    body{background:
-      radial-gradient(1200px 600px at 10% 10%, rgba(240,180,41,0.05), transparent 10%),
-      radial-gradient(900px 400px at 95% 90%, rgba(15,42,57,0.07), transparent 10%),
-      var(--bg);
-      color:#e6f6f9; -webkit-font-smoothing:antialiased; line-height:1.45}
-    .wrap{max-width:var(--maxw);margin:30px auto;padding:28px}
-    header{display:flex;align-items:center;gap:18px}
-    .logo{
-      width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018;font-size:22px;box-shadow:0 6px 20px rgba(0,0,0,0.6)
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg,#041018 0%, #071427 60%);
+      color:#e6f6f9;
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;
     }
-    h1{font-size:28px;margin-bottom:6px}
-    p.lead{color:var(--muted);margin-bottom:16px}
+    .wrap{max-width:1200px;margin:28px auto;padding:20px}
+    header{display:flex;gap:16px;align-items:center}
+    .logo{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018;font-size:22px;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+    h1{font-size:26px;margin:0}
+    p.lead{color:var(--muted);margin:4px 0 0 0}
 
-    .hero{display:grid;grid-template-columns:1fr 420px;gap:22px;margin-top:18px;align-items:start}
-    .card{background:linear-gradient(180deg,var(--card),rgba(15,42,57,0.92));border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(6,18,25,0.6);backdrop-filter: blur(6px)}
-    .features{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .feature{padding:12px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
-    .cta{display:flex;gap:12px;margin-top:12px}
-    .btn{background:var(--accent);color:#071018;padding:12px 16px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 380px;gap:18px;margin-top:18px;align-items:start}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 30px rgba(6,18,25,0.5)}
+    .features{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+    .feature{padding:12px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02)}
+    .btn{background:var(--accent);color:#071018;padding:10px 14px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
     .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-
-    /* Right column */
-    .panel{display:flex;flex-direction:column;gap:12px}
-    .preview{height:240px;border-radius:12px;background:
-      linear-gradient(180deg, rgba(0,0,0,0.15), rgba(255,255,255,0.02));
-      display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700}
     .small{font-size:13px;color:var(--muted)}
 
-    /* sections */
-    section{margin-top:20px}
-    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .card h3{margin-bottom:8px}
-    .howto ol{margin-left:18px;color:var(--muted);margin-top:8px}
+    /* Skin Studio */
+    .studio{margin-top:20px;display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:start}
+    .editor{height:640px;border-radius:12px;overflow:hidden;position:relative;background:#000}
+    /* visible canvas area */
+    #viewWrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#031018,#071a22);position:relative}
+    canvas#view{max-width:100%;max-height:100%;background:#071416;box-shadow:0 10px 30px rgba(2,8,10,0.6);border-radius:6px}
 
-    footer{margin-top:30px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+    .controls{display:flex;flex-direction:column;gap:10px}
+    .controls .row{display:flex;gap:8px;align-items:center}
+    input[type="range"]{width:100%}
+    label{font-size:13px;color:var(--muted)}
+
+    .rightPanel .meta{display:flex;gap:8px;margin-bottom:8px}
+    .hint{font-size:13px;color:var(--muted);margin-top:8px}
+
+    /* export modal */
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:rgba(0,0,0,0.7);padding:10px 14px;border-radius:8px;color:#fff;display:none}
+
+    footer{margin-top:24px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 
     /* responsive */
-    @media (max-width:960px){
+    @media (max-width:980px){
       .hero{grid-template-columns:1fr}
-      .grid3{grid-template-columns:1fr}
-      .features{grid-template-columns:1fr}
+      .studio{grid-template-columns:1fr}
+      .editor{height:520px}
     }
+
+    /* subtle animated particles background */
+    .bg-particles{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.12}
+    .glass-header{backdrop-filter: blur(6px);border-radius:10px;padding:10px;background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">SS</div>
-      <div>
-        <h1>Global Trucking Hub — Super Sena</h1>
-        <p class="lead">Plataforma integrada inédita para ETS2: comboios em tempo real, marketplace de jobs, estúdio de skins 4096x4096 e telemetria para streamers.</p>
+  <div class="bg-particles" aria-hidden>
+    <svg width="100%" height="100%" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#f0b429" stop-opacity="0.12"/><stop offset="1" stop-color="#ff7a7a" stop-opacity="0.02"/></linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#g1)"/>
+    </svg>
+  </div>
+
+  <div class="wrap" style="position:relative;z-index:2">
+    <header class="glass-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="logo">SS</div>
+        <div>
+          <h1>Global Trucking Hub — Super Sena</h1>
+          <p class="lead">Protótipo: Skin Studio 4096 + Matchmaking de comboios e telemetria. Editor integrado para criar skins realistas para ETS2.</p>
+        </div>
       </div>
     </header>
 
     <div class="hero">
       <div class="card">
-        <h2>O que é (único no mundo ETS2)</h2>
-        <p class="small">Imagine um lugar onde jogadores encontram comboios prontos na sua região, contratam cargas pagas em Pickup coins, geram skins profissionais em 2 minutos e transmitem com overlays dinâmicos — tudo integrado.</p>
+        <h2>Por que isso importa?</h2>
+        <p class="small">Unir edição de skins de alta qualidade (4096x4096) com uma comunidade de comboios e telemetria — tudo num único hub. Teste este protótipo e gere suas skins localmente.</p>
 
-        <div class="features" style="margin-top:16px">
-          <div class="feature">
-            <strong>Matchmaking de Comboios</strong>
-            <div class="small">Agende ou entre em comboios por região, nível de simulação, e tipo de carga.</div>
-          </div>
-          <div class="feature">
-            <strong>Marketplace de Jobs</strong>
-            <div class="small">Jobs de comunidade com pagamento em Pickup coins e avaliações de entregas.</div>
-          </div>
-          <div class="feature">
-            <strong>Estúdio de Skins 4096</strong>
-            <div class="small">Editor simples + AI generator. Preview 2D e render realista em 3D.</div>
-          </div>
-          <div class="feature">
-            <strong>Telemetria & Stream Overlays</strong>
-            <div class="small">Saída de dados em tempo real para OBS/Streamlabs com widgets personalizáveis.</div>
-          </div>
+        <div class="features">
+          <div class="feature"><strong>Editor 4096</strong><div class="small">Upload do template e export para PNG em 4096×4096.</div></div>
+          <div class="feature"><strong>Matchmaking</strong><div class="small">Agende comboios e compartilhe mods e perfil.</div></div>
+          <div class="feature"><strong>Telemetria</strong><div class="small">Widgets para streamers e overlays interativos.</div></div>
+          <div class="feature"><strong>Community</strong><div class="small">Galeria de skins e jobs verificados.</div></div>
         </div>
 
-        <div class="cta">
-          <button class="btn" onclick="signup()">Quero testar (beta)</button>
-          <button class="btn ghost" onclick="openDemo()">Ver demo</button>
-        </div>
-
-        <div style="margin-top:14px;color:var(--muted);font-size:13px">
-          * Projeto conceitual — protótipo funcional em roadmap. Suporte a skins 4096x4094, export para `.scs` e integração com pickup. Não requer instalação em servidor local.
+        <div style="margin-top:12px;display:flex;gap:10px">
+          <button class="btn" onclick="document.getElementById('studio').scrollIntoView({behavior:'smooth'})">Testar Skin Studio</button>
+          <button class="btn ghost" onclick="alert('Roadmap enviado! (demo)')">Roadmap</button>
         </div>
       </div>
 
-      <aside class="panel">
-        <div class="card" style="padding:12px">
-          <div class="small">Preview rápido</div>
-          <div class="preview" id="preview">[ Previsualização 3D placeholder ]</div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn" onclick="simulate('convoy')">Entrar comboio</button>
-            <button class="btn ghost" onclick="simulate('skin')">Gerar skin AI</button>
-          </div>
+      <aside class="card">
+        <div class="small">Preview & Beta</div>
+        <div style="height:12px"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="alert('Convite demo enviado (demo)')">Entrar beta</button>
+          <button class="btn ghost" onclick="alert('Apoie o projeto (demo)')">Apoiar</button>
         </div>
-
-        <div class="card" style="padding:12px">
-          <div class="small">Entrar na lista Beta</div>
-          <form id="betaForm" onsubmit="event.preventDefault(); signup();">
-            <input type="email" id="email" placeholder="seu@email.com" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" required>
-            <button class="btn" style="width:100%;margin-top:8px">Enviar</button>
-            <div class="small" style="margin-top:6px">Receba convite para testar matchmaking e estúdio de skins.</div>
-          </form>
-        </div>
+        <div class="hint" style="margin-top:12px">Dica: use templates com 4096×4096 para melhor qualidade no export.</div>
       </aside>
     </div>
 
-    <!-- Features detalhadas -->
-    <section class="card">
-      <h2>Por que isso é revolucionário?</h2>
-      <div class="grid3" style="margin-top:12px">
-        <div class="card" style="padding:14px">
-          <h3>Comboios inteligentes</h3>
-          <div class="small">Match automático por região, sincronização de mods e checagem de compatibilidade de mapa antes do comboio iniciar.</div>
+    <!-- SKIN STUDIO -->
+    <section id="studio" class="studio">
+      <div class="card">
+        <h2>Skin Studio — Editor 4096×4096</h2>
+        <div style="margin-top:8px;color:var(--muted)">Crie skins profissionais: faça upload do template, adicione logos e imagens, posicione e exporte em alta resolução.</div>
+
+        <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+          <div class="controls" style="flex:1;min-width:220px;">
+            <div class="row">
+              <label>Upload Template (4096×4096 recomendados)</label>
+            </div>
+            <input id="templateFile" type="file" accept="image/*" />
+            <div style="height:6px"></div>
+
+            <div class="row">
+              <label>Upload Logo / Sticker</label>
+            </div>
+            <input id="logoFile" type="file" accept="image/*" />
+            <div style="height:6px"></div>
+
+            <div style="margin-top:10px">
+              <label>Selecionado: <span id="currentStatus" class="small">nenhum</span></label>
+            </div>
+
+            <div style="margin-top:10px">
+              <label>Escala</label>
+              <input id="scale" type="range" min="0.1" max="3" step="0.01" value="1">
+            </div>
+            <div>
+              <label>Rotação (°)</label>
+              <input id="rotate" type="range" min="-180" max="180" step="1" value="0">
+            </div>
+            <div>
+              <label>Opacidade</label>
+              <input id="opacity" type="range" min="0" max="1" step="0.01" value="1">
+            </div>
+
+            <div style="margin-top:8px">
+              <button class="btn" id="centerBtn">Centralizar Logo</button>
+              <button class="btn ghost" id="clearLogo">Remover Logo</button>
+            </div>
+
+            <div style="margin-top:12px">
+              <label>Export / Download</label>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn" id="exportBtn">Exportar PNG 4096</button>
+                <button class="btn ghost" id="previewHighBtn">Prévia Alta (download)</button>
+              </div>
+            </div>
+
+            <div class="hint">Dica: depois de posicionar a logo, ajuste escala e rotação. Clique em Exportar para gerar PNG 4096×4096.</div>
+          </div>
+
+          <div class="editor" style="flex:2;min-width:420px">
+            <div id="viewWrap">
+              <canvas id="view"></canvas>
+            </div>
+          </div>
+
         </div>
-        <div class="card" style="padding:14px">
-          <h3>Jobs verificados</h3>
-          <div class="small">Empregadores publicam cargas reais na plataforma; entregadores com rating recebem bônus — tudo rastreado por telemetria.</div>
-        </div>
-        <div class="card" style="padding:14px">
-          <h3>Skin Studio com AI</h3>
-          <div class="small">Descreva o estilo (patriótica, agressiva, minimalista) e a IA gera 3 variantes. Ajuste no editor e exporte para `.scs`.</div>
+
+        <div style="margin-top:12px;color:var(--muted)">
+          <strong>Observações:</strong> a exportação acontece no navegador (client-side). Para criar `.scs` você precisará empacotar o `.png` dentro do mod com as ferramentas do modding (Game Archive Packer).
         </div>
       </div>
-    </section>
 
-    <section class="card howto">
-      <h2>Como funciona (rápido)</h2>
-      <ol>
-        <li>Crie conta → sincronize Steam/Steam Workshop.</li>
-        <li>Escolha: entrar em comboio, publicar job ou criar skin.</li>
-        <li>Preview em 3D → exporte .scs ou junte-se ao comboio.</li>
-      </ol>
-      <div style="margin-top:10px;color:var(--muted)">Nota: integração com pickup/telemetria requer API token (beta).</div>
-    </section>
-
-    <section class="card">
-      <h2>Demo & Provas</h2>
-      <p class="small">Abaixo há protótipos visuais e GIFs (substitua por vídeos do canal quando disponíveis).</p>
-      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
-        <div style="width:260px;height:140px;border-radius:10px;background:#031018;display:flex;align-items:center;justify-content:center;color:var(--muted)">Vídeo: comboio</div>
-        <div style="width:260px;height:140px;border-radius:10px;background:#031018;display:flex;align-items:center;justify-content:center;color:var(--muted)">Vídeo: editor skins</div>
-        <div style="width:260px;height:140px;border-radius:10px;background:#031018;display:flex;align-items:center;justify-content:center;color:var(--muted)">Overlay stream</div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Fale com a gente</h2>
-      <p class="small">Quer patrocinar o projeto, testar no servidor ou colaborar com devs/modders? Entre em contato.</p>
-      <form onsubmit="event.preventDefault(); alert('Mensagem enviada! (demo)')">
-        <input placeholder="Nome" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);width:100%;background:transparent;color:inherit;margin-bottom:8px">
-        <input placeholder="E-mail" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);width:100%;background:transparent;color:inherit;margin-bottom:8px">
-        <textarea placeholder="Mensagem" rows="3" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);width:100%;background:transparent;color:inherit"></textarea>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn" type="submit">Enviar</button>
-          <button class="btn ghost" type="button" onclick="location.href='#'">Roadmap</button>
+      <!-- Right panel -->
+      <aside class="card rightPanel">
+        <div class="meta">
+          <div style="flex:1">
+            <div class="small">Status</div>
+            <div id="metaInfo" style="font-weight:700">Pronto</div>
+          </div>
         </div>
-      </form>
+
+        <div style="margin-top:10px">
+          <div class="small">Controles</div>
+          <ul class="small" style="margin-top:6px;color:var(--muted)">
+            <li>Arraste a logo no canvas para posicionar</li>
+            <li>Use os sliders para escala, rotação e opacidade</li>
+            <li>Exporta PNG 4096×4096 com qualidade máxima</li>
+          </ul>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="small">Tutorial Rápido</div>
+          <ol style="margin-left:14px;color:var(--muted);margin-top:6px">
+            <li>Upload do template</li>
+            <li>Upload do logo</li>
+            <li>Posicione e ajuste</li>
+            <li>Exportar</li>
+          </ol>
+        </div>
+
+      </aside>
     </section>
 
     <footer>
-      <div>© Super Sena — Global Trucking Hub (Protótipo)</div>
+      <div>© Super Sena — Skin Studio (Protótipo)</div>
       <div>
         <a href="https://instagram.com/supersena7" style="color:var(--muted);margin-right:10px">Instagram</a>
         <a href="https://discord.gg/8SzFU4BnnB" style="color:var(--muted)">Discord</a>
@@ -184,28 +222,250 @@
     </footer>
   </div>
 
+  <div class="toast" id="toast">Exportando...</div>
+
   <script>
-    // simples interatividade demo
-    function signup(){
-      const email = document.getElementById('email')?.value || null;
-      if(email){
-        alert('Obrigado! Convite enviado para: ' + email + ' (demo)');
-      } else {
-        alert('Obrigado! Sua solicitação foi registrada (demo).');
+    // Editor logic
+    const view = document.getElementById('view');
+    const ctx = view.getContext('2d', { alpha: true });
+
+    // visible canvas size (scaled)
+    function fitCanvas(){
+      const wrap = document.getElementById('viewWrap');
+      const rect = wrap.getBoundingClientRect();
+      // maintain aspect ratio 1:1
+      const size = Math.min(rect.width - 20, rect.height - 20);
+      view.width = size;
+      view.height = size;
+      draw();
+    }
+    window.addEventListener('resize', fitCanvas);
+
+    // Offscreen high-res canvas for export
+    const exportSize = 4096;
+    const off = document.createElement('canvas');
+    off.width = exportSize;
+    off.height = exportSize;
+    const offCtx = off.getContext('2d', {alpha:true});
+
+    let templateImg = null;
+    let logoImg = null;
+
+    // logo transform state
+    const state = {
+      logoX: exportSize/2,
+      logoY: exportSize/2,
+      scale: 1,
+      rot: 0,
+      opacity: 1,
+      dragging: false,
+      dragOffsetX:0,
+      dragOffsetY:0
+    };
+
+    const elTemplate = document.getElementById('templateFile');
+    const elLogo = document.getElementById('logoFile');
+    const status = document.getElementById('currentStatus');
+    const metaInfo = document.getElementById('metaInfo');
+
+    elTemplate.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if(!f) return;
+      const url = URL.createObjectURL(f);
+      const img = new Image();
+      img.onload = () => {
+        templateImg = img;
+        status.innerText = f.name;
+        metaInfo.innerText = 'Template carregado';
+        draw();
+      };
+      img.src = url;
+    });
+
+    elLogo.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if(!f) return;
+      const url = URL.createObjectURL(f);
+      const img = new Image();
+      img.onload = () => {
+        logoImg = img;
+        // set default logo size relative to export canvas
+        state.scale = Math.min(1.0, (exportSize * 0.25) / Math.max(img.width, img.height));
+        state.logoX = exportSize/2;
+        state.logoY = exportSize/2;
+        document.getElementById('scale').value = state.scale;
+        document.getElementById('opacity').value = state.opacity;
+        document.getElementById('rotate').value = state.rot;
+        metaInfo.innerText = 'Logo carregado';
+        draw();
+      };
+      img.src = url;
+    });
+
+    // sliders
+    document.getElementById('scale').addEventListener('input', e => {
+      state.scale = parseFloat(e.target.value);
+      draw();
+    });
+    document.getElementById('rotate').addEventListener('input', e => {
+      state.rot = parseFloat(e.target.value) * Math.PI / 180;
+      draw();
+    });
+    document.getElementById('opacity').addEventListener('input', e => {
+      state.opacity = parseFloat(e.target.value);
+      draw();
+    });
+    document.getElementById('centerBtn').addEventListener('click', () => {
+      state.logoX = exportSize/2;
+      state.logoY = exportSize/2;
+      draw();
+    });
+    document.getElementById('clearLogo').addEventListener('click', () => {
+      logoImg = null;
+      metaInfo.innerText = 'Logo removido';
+      draw();
+    });
+
+    // mouse interactions for dragging (on visible canvas mapped to export coords)
+    function viewToExportCoords(clientX, clientY){
+      const rect = view.getBoundingClientRect();
+      const vx = clientX - rect.left;
+      const vy = clientY - rect.top;
+      const scale = exportSize / view.width;
+      return { x: vx * scale, y: vy * scale };
+    }
+
+    view.addEventListener('mousedown', (ev) => {
+      if(!logoImg) return;
+      const p = viewToExportCoords(ev.clientX, ev.clientY);
+      // compute rotated bounding box hit test
+      const w = logoImg.width * state.scale;
+      const h = logoImg.height * state.scale;
+      // rotate point into logo local space
+      const dx = p.x - state.logoX;
+      const dy = p.y - state.logoY;
+      const s = Math.sin(-state.rot);
+      const c = Math.cos(-state.rot);
+      const lx = dx*c - dy*s;
+      const ly = dx*s + dy*c;
+      if(Math.abs(lx) <= w/2 && Math.abs(ly) <= h/2){
+        state.dragging = true;
+        state.dragOffsetX = lx;
+        state.dragOffsetY = ly;
       }
-    }
-    function openDemo(){
-      alert('Demo em desenvolvimento — envie seu e-mail para acesso beta (demo).');
-    }
-    function simulate(action){
-      const p = document.getElementById('preview');
-      if(action === 'convoy'){
-        p.innerText = 'Entrando em comboio... conectando jogadores (demo)';
+    });
+
+    window.addEventListener('mousemove', (ev) => {
+      if(!state.dragging) return;
+      const p = viewToExportCoords(ev.clientX, ev.clientY);
+      // set logo center such that the local coordinates match offset
+      const s = Math.sin(state.rot);
+      const c = Math.cos(state.rot);
+      // convert local offset back
+      const ox = state.dragOffsetX;
+      const oy = state.dragOffsetY;
+      const worldOffsetX = ox*c + oy*s;
+      const worldOffsetY = -ox*s + oy*c;
+      state.logoX = p.x - worldOffsetX;
+      state.logoY = p.y - worldOffsetY;
+      draw();
+    });
+
+    window.addEventListener('mouseup', () => { state.dragging = false; });
+
+    // drawing logic: draws scaled template and logo into visible canvas
+    function draw(){
+      // clear visible
+      ctx.clearRect(0,0,view.width,view.height);
+      // draw template scaled to fit export->view ratio
+      if(templateImg){
+        // draw into offscreen at export size first
+        offCtx.clearRect(0,0,exportSize,exportSize);
+        // fit template to export canvas while preserving ratio (we assume template is square 1:1)
+        const tw = templateImg.width;
+        const th = templateImg.height;
+        // draw background (template)
+        offCtx.drawImage(templateImg, 0, 0, exportSize, exportSize);
       } else {
-        p.innerText = 'Gerando skin AI... 3 variações (demo)';
+        // default checker background
+        offCtx.fillStyle = '#0b1a1a';
+        offCtx.fillRect(0,0,exportSize,exportSize);
       }
-      setTimeout(()=>{ p.innerText = '[ Previsualização 3D placeholder ]'; }, 2500);
+
+      // draw logo on offscreen
+      if(logoImg){
+        offCtx.save();
+        offCtx.translate(state.logoX, state.logoY);
+        offCtx.rotate(state.rot);
+        offCtx.globalAlpha = state.opacity;
+        const w = logoImg.width * state.scale;
+        const h = logoImg.height * state.scale;
+        offCtx.drawImage(logoImg, -w/2, -h/2, w, h);
+        offCtx.restore();
+      }
+
+      // now scale offscreen into visible canvas
+      ctx.clearRect(0,0,view.width,view.height);
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(off, 0, 0, view.width, view.height);
     }
+
+    // export logic: compose final and download
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(()=> t.style.display='none', 3000);
+    }
+
+    document.getElementById('exportBtn').addEventListener('click', async () => {
+      showToast('Gerando PNG 4096×4096 — aguarde...');
+      // ensure offscreen has final composition (already composed by draw)
+      // create blob and download
+      off.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'super_sena_skin_4096.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('Download iniciado.');
+      }, 'image/png', 1.0);
+    });
+
+    // previewHighBtn: downloads same export for quick check
+    document.getElementById('previewHighBtn').addEventListener('click', () => {
+      showToast('Gerando prévia 4096 (download)...');
+      off.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'preview_skin_4096.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png', 1.0);
+    });
+
+    // initial fit
+    fitCanvas();
+    // initial draw placeholder
+    offCtx.fillStyle = '#071416';
+    offCtx.fillRect(0,0,exportSize,exportSize);
+    offCtx.fillStyle = '#072a2a';
+    offCtx.fillRect(0,0,exportSize,exportSize/6);
+    offCtx.fillStyle = '#fff';
+    offCtx.font = 'bold 80px Arial';
+    offCtx.fillText('Super Sena Skin Studio (preview)', 80, 200);
+    draw();
+
+    // accessibility: keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'e') document.getElementById('exportBtn').click();
+      if(e.key === 'c') document.getElementById('centerBtn').click();
+    });
+
   </script>
 </body>
 </html>
