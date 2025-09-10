@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENA SKINS - ETS2 Skin Designer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Three.js para o Visualizador 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .bg-charcoal {
+            background-color: #2c2c2c;
+        }
+        .text-golden {
+            color: #d4af37;
+        }
+        .border-golden {
+            border-color: #d4af37;
+        }
+        .active-tool {
+            background-color: #d4af37 !important;
+            color: #1a1a1a !important;
+        }
+        #mainCanvas {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #555;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        #threeDViewer {
+            width: 100%;
+            height: 100%;
+        }
+        /* Esconde as barras de rolagem para uma aparência mais limpa */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE e Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .tool-info {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body class="bg-zinc-900">
+
+    <!-- Cabeçalho -->
+    <header class="fixed top-0 left-0 right-0 z-50 p-4 lg:px-12 backdrop-blur-md bg-zinc-900/80 shadow-lg">
+        <nav class="flex justify-between items-center max-w-7xl mx-auto">
+            <h1 class="text-3xl font-bold text-white tracking-widest cursor-pointer" onclick="showPage('home')">
+                <span class="text-golden">SENA</span> SKINS
+            </h1>
+            <div class="hidden lg:flex space-x-8 text-lg font-medium">
+                <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('editor')">Editor</a>
+                <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('ai-generator')">Gerador IA</a>
+                <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('gallery')">Galeria</a>
+                <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('faq')">FAQ</a>
+            </div>
+            <!-- Botão do Menu Mobile -->
+            <button id="menu-toggle" class="lg:hidden text-white focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+        <!-- Overlay do Menu Mobile -->
+        <div id="mobile-menu" class="hidden lg:hidden fixed inset-0 bg-zinc-900/90 z-40 flex flex-col items-center justify-center space-y-8 text-2xl font-semibold">
+            <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('editor')">Editor</a>
+            <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('ai-generator')">Gerador IA</a>
+            <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('gallery')">Galeria</a>
+            <a href="#" class="text-white hover:text-golden transition-colors" onclick="showPage('faq')">FAQ</a>
+            <button class="absolute top-4 right-4 text-white p-2 rounded-full border-2 border-white hover:border-golden hover:text-golden transition-colors" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Área de Conteúdo Principal -->
+    <main class="pt-24 pb-8 min-h-screen">
+        <!-- Página Inicial -->
+        <section id="home" class="page active text-center max-w-6xl mx-auto px-4">
+            <div class="py-24">
+                <div class="relative w-full h-80 lg:h-96 bg-charcoal rounded-3xl overflow-hidden flex items-center justify-center">
+                    <img src="https://placehold.co/1200x400/2c2c2c/555555?text=Animação+Cinemática+de+Caminhão" alt="Truck Animation" class="absolute inset-0 w-full h-full object-cover opacity-50">
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-5xl lg:text-7xl font-extrabold text-white leading-tight">Crie Sua Skin. <br> Dirija com <span class="text-golden">Estilo.</span></h2>
+                        <button class="mt-8 px-8 py-4 bg-golden text-zinc-900 font-bold text-lg rounded-full shadow-lg hover:bg-white transition-all transform hover:scale-105" onclick="showPage('editor')">
+                            Começar a Criar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16">
+                <h3 class="text-4xl font-bold mb-8">Skins em Destaque da Comunidade</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-charcoal rounded-2xl p-6 shadow-xl">
+                        <img src="https://placehold.co/600x400/333333/555555?text=Skin+Futurista" class="rounded-xl mb-4" alt="Skin 1">
+                        <h4 class="text-xl font-semibold text-white">Cyber Hauler</h4>
+                        <p class="text-gray-400">por JohnnyBrave</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-golden font-bold">1.2K Likes</span>
+                            <button class="text-white hover:text-golden transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-charcoal rounded-2xl p-6 shadow-xl">
+                        <img src="https://placehold.co/600x400/333333/555555?text=Skin+Retrô" class="rounded-xl mb-4" alt="Skin 2">
+                        <h4 class="text-xl font-semibold text-white">Retro Classic</h4>
+                        <p class="text-gray-400">por TruckerJoe</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-golden font-bold">850 Likes</span>
+                            <button class="text-white hover:text-golden transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-charcoal rounded-2xl p-6 shadow-xl">
+                        <img src="https://placehold.co/600x400/333333/555555?text=Skin+Abstrata" class="rounded-xl mb-4" alt="Skin 3">
+                        <h4 class="text-xl font-semibold text-white">Cosmic Wave</h4>
+                        <p class="text-gray-400">por GalaxyTrucks</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-golden font-bold">620 Likes</span>
+                            <button class="text-white hover:text-golden transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-24 bg-charcoal p-8 rounded-3xl shadow-xl">
+                <h3 class="text-3xl font-bold mb-4">Gere Skins Únicas com IA! ✨</h3>
+                <p class="text-gray-300 max-w-xl mx-auto mb-6">Descreva o estilo, as cores e o tema que você deseja, e nossa IA fará o resto, criando um design exclusivo em segundos.</p>
+                <button class="px-8 py-4 bg-golden text-zinc-900 font-bold text-lg rounded-full shadow-lg hover:bg-white transition-all transform hover:scale-105" onclick="showPage('ai-generator')">
+                    ✨ Gerar Skin com IA
+                </button>
+            </div>
+        </section>
+
+        <!-- Página do Editor -->
+        <section id="editor" class="page p-4 lg:p-8">
+            <div class="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
+                <!-- Barra Lateral Esquerda: Ferramentas -->
+                <aside class="lg:w-64 bg-charcoal rounded-2xl p-6 shadow-xl flex flex-col items-center no-scrollbar overflow-y-auto">
+                    <h3 class="text-xl font-bold mb-6 text-golden">Ferramentas</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-4 w-full">
+                        <button class="tool-btn flex items-center justify-center p-4 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition-colors active-tool" data-tool="brush" title="Pincel">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.718 12.079 12.079 0 01.665-6.479L12 14z" stroke-linejoin="round" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14L12 21" />
+                            </svg>
+                        </button>
+                        <button class="tool-btn flex items-center justify-center p-4 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition-colors" data-tool="shapes" title="Formas">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </button>
+                        <button class="tool-btn flex items-center justify-center p-4 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition-colors" data-tool="text" title="Texto">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                        <button id="loadTemplateBtn" class="flex items-center justify-center p-4 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition-colors" title="Carregar Template">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                        </button>
+                        <label class="p-4 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition-colors cursor-pointer flex items-center justify-center" title="Upload de Imagem">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                            <input type="file" id="imageUpload" class="hidden" accept="image/*">
+                        </label>
+                        <button class="tool-btn flex items-center justify-center p-4 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition-colors" data-tool="gradient" title="Gradiente">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 11.5V14m0-2.5v2.5m-2.5 0h-2.5h2.5zm15-2.5V14m0-2.5v2.5m-2.5 0h-2.5h2.5zm0-10a12 12 0 00-8.5 3.5l-3 3A12 12 0 0012 22v-6c3.9-1.3 6.6-4.9 6.6-9v-1z" />
+                            </svg>
+                        </button>
+                        <button class="tool-btn flex items-center justify-center p-4 bg-zinc-800 rounded-xl hover:bg-zinc-700 transition-colors" data-tool="metallic" title="Efeito Metálico">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-8 flex flex-col items-center w-full">
+                        <label for="colorPicker" class="text-sm text-gray-400 mb-2">Cor</label>
+                        <input type="color" id="colorPicker" value="#d4af37" class="h-12 w-12 rounded-full border-2 border-white cursor-pointer">
+                    </div>
+                </aside>
+                
+                <!-- Canvas Principal & Visualizador 3D -->
+                <div class="flex-grow flex flex-col gap-8">
+                    <div class="flex flex-col lg:flex-row gap-8 bg-charcoal rounded-2xl p-6 shadow-xl">
+                        <!-- Canvas -->
+                        <div class="flex-1 w-full flex justify-center items-center relative">
+                            <canvas id="mainCanvas" class="bg-zinc-800 rounded-xl shadow-inner"></canvas>
+                            <div id="toolInfo" class="tool-info"></div>
+                        </div>
+                        <!-- Visualizador 3D -->
+                        <div class="flex-1 w-full lg:w-96 h-96 bg-zinc-800 rounded-xl shadow-inner relative">
+                            <div class="absolute inset-0 z-10 p-4">
+                                <h4 class="text-sm text-center text-gray-400">Visualizador 3D em Tempo Real</h4>
+                            </div>
+                            <canvas id="threeDViewer"></canvas>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                        <button class="px-8 py-4 bg-golden text-zinc-900 font-bold text-lg rounded-full shadow-lg hover:bg-white transition-all transform hover:scale-105">
+                            Salvar Projeto
+                        </button>
+                        <button class="px-8 py-4 bg-white text-zinc-900 font-bold text-lg rounded-full shadow-lg hover:bg-golden hover:text-white transition-all transform hover:scale-105">
+                            Baixar Skin (.scs)
+                        </button>
+                        <button class="px-8 py-4 bg-zinc-700 text-white font-bold text-lg rounded-full shadow-lg hover:bg-zinc-600 transition-all transform hover:scale-105">
+                            Compartilhar
+                        </button>
+                        <button id="generateFromEditorBtn" class="px-8 py-4 bg-blue-500 text-white font-bold text-lg rounded-full shadow-lg hover:bg-blue-600 transition-all transform hover:scale-105">
+                            Gerar com Base no Editor ✨
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página do Gerador de IA -->
+        <section id="ai-generator" class="page text-center max-w-4xl mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-4">Gerador de Skins com <span class="text-golden">IA</span> ✨</h2>
+            <p class="text-gray-400 max-w-xl mx-auto mb-8">Descreva a skin dos seus sonhos. Nossa IA vai transformar sua visão em realidade.</p>
+            <div class="bg-charcoal rounded-3xl p-8 shadow-xl">
+                <textarea id="ai-prompt" rows="4" class="w-full bg-zinc-800 text-white rounded-xl p-4 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-golden resize-none" placeholder="Ex: Chamas agressivas em vermelho e preto, com um tema de dragão cibernético."></textarea>
+                <div class="flex flex-wrap justify-center gap-2 mt-4">
+                    <span class="tag-btn bg-zinc-700 px-4 py-2 rounded-full text-sm hover:bg-golden hover:text-zinc-900 transition-colors cursor-pointer">Futurista</span>
+                    <span class="tag-btn bg-zinc-700 px-4 py-2 rounded-full text-sm hover:bg-golden hover:text-zinc-900 transition-colors cursor-pointer">Vintage</span>
+                    <span class="tag-btn bg-zinc-700 px-4 py-2 rounded-full text-sm hover:bg-golden hover:text-zinc-900 transition-colors cursor-pointer">Corrida</span>
+                    <span class="tag-btn bg-zinc-700 px-4 py-2 rounded-full text-sm hover:bg-golden hover:text-zinc-900 transition-colors cursor-pointer">Abstrato</span>
+                    <span class="tag-btn bg-zinc-700 px-4 py-2 rounded-full text-sm hover:bg-golden hover:text-zinc-900 transition-colors cursor-pointer">Minimalista</span>
+                </div>
+                <button id="generate-ai-btn" class="mt-8 px-8 py-4 bg-golden text-zinc-900 font-bold text-lg rounded-full shadow-lg hover:bg-white transition-all transform hover:scale-105 disabled:bg-gray-500 disabled:cursor-not-allowed">
+                    ✨ Gerar Minha Skin
+                </button>
+            </div>
+            <div id="ai-result" class="mt-8 hidden">
+                <h3 class="text-2xl font-bold mb-4">Resultado da IA</h3>
+                <div class="bg-charcoal rounded-3xl p-6 shadow-xl relative">
+                    <img id="ai-result-image" src="https://placehold.co/800x600/333333/555555?text=Gerando+Skin..." class="w-full rounded-2xl" alt="AI Generated Skin">
+                    <p id="ai-loading-text" class="absolute inset-0 flex items-center justify-center bg-zinc-900/80 text-white text-xl font-medium hidden">Gerando, por favor aguarde...</p>
+                    <button class="mt-4 px-6 py-3 bg-white text-zinc-900 font-bold rounded-full shadow-lg hover:bg-golden hover:text-white transition-all">Abrir no Editor</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página da Galeria -->
+        <section id="gallery" class="page max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-8">Galeria da Comunidade</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Cartões da Galeria (Placeholder) -->
+                <div class="bg-charcoal rounded-2xl p-4 shadow-xl text-center">
+                    <img src="https://placehold.co/600x400/333333/555555?text=Retro+Racer" class="rounded-xl mb-4" alt="Gallery Skin 1">
+                    <h4 class="text-lg font-semibold text-white">Retro Racer</h4>
+                    <p class="text-sm text-gray-400">@SpeedyGonz</p>
+                </div>
+                <div class="bg-charcoal rounded-2xl p-4 shadow-xl text-center">
+                    <img src="https://placehold.co/600x400/333333/555555?text=Ocean+Wave" class="rounded-xl mb-4" alt="Gallery Skin 2">
+                    <h4 class="text-lg font-semibold text-white">Ocean Wave</h4>
+                    <p class="text-sm text-gray-400">@DeepBlue</p>
+                </div>
+                <div class="bg-charcoal rounded-2xl p-4 shadow-xl text-center">
+                    <img src="https://placehold.co/600x400/333333/555555?text=Golden+King" class="rounded-xl mb-4" alt="Gallery Skin 3">
+                    <h4 class="text-lg font-semibold text-white">Golden King</h4>
+                    <p class="text-sm text-gray-400">@MidasTouch</p>
+                </div>
+                <div class="bg-charcoal rounded-2xl p-4 shadow-xl text-center">
+                    <img src="https://placehold.co/600x400/333333/555555?text=Desert+Storm" class="rounded-xl mb-4" alt="Gallery Skin 4">
+                    <h4 class="text-lg font-semibold text-white">Desert Storm</h4>
+                    <p class="text-sm text-gray-400">@RoadWarrior</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página de FAQ -->
+        <section id="faq" class="page max-w-4xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-8">Dúvidas Frequentes</h2>
+            <div class="space-y-4">
+                <div class="bg-charcoal rounded-2xl shadow-xl p-6">
+                    <button class="accordion-btn flex justify-between items-center w-full text-lg font-semibold focus:outline-none">
+                        <span>Como aplico a skin no ETS2?</span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <p class="mt-4 text-gray-300">
+                            Após baixar o arquivo .scs, mova-o para a pasta de mod do seu jogo (geralmente em `Documentos/Euro Truck Simulator 2/mod`). Em seguida, ative o mod no Gerenciador de Mods do jogo antes de iniciar um novo trabalho.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-charcoal rounded-2xl shadow-xl p-6">
+                    <button class="accordion-btn flex justify-between items-center w-full text-lg font-semibold focus:outline-none">
+                        <span>Posso usar minha própria imagem ou logo?</span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <p class="mt-4 text-gray-300">
+                            Sim, o editor possui uma ferramenta de upload de imagem. Você pode importar seus próprios gráficos para o template e editá-los conforme desejar.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-charcoal rounded-2xl shadow-xl p-6">
+                    <button class="accordion-btn flex justify-between items-center w-full text-lg font-semibold focus:outline-none">
+                        <span>O gerador de IA é gratuito?</span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <p class="mt-4 text-gray-300">
+                            O gerador de IA oferece um número limitado de gerações gratuitas para experimentação. Para acesso ilimitado, você pode adquirir um de nossos pacotes premium.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        // Variáveis globais
+        const pages = document.querySelectorAll('.page');
+        const toolButtons = document.querySelectorAll('.tool-btn');
+        const colorPicker = document.getElementById('colorPicker');
+        const mainCanvas = document.getElementById('mainCanvas');
+        const ctx = mainCanvas.getContext('2d');
+        const imageUpload = document.getElementById('imageUpload');
+        const loadTemplateBtn = document.getElementById('loadTemplateBtn');
+        const aiPrompt = document.getElementById('ai-prompt');
+        const generateAiBtn = document.getElementById('generate-ai-btn');
+        const aiResult = document.getElementById('ai-result');
+        const aiResultImage = document.getElementById('ai-result-image');
+        const aiLoadingText = document.getElementById('ai-loading-text');
+        const generateFromEditorBtn = document.getElementById('generateFromEditorBtn');
+        const toolInfoDisplay = document.getElementById('toolInfo');
+        
+        // Estado do editor
+        let currentPage = 'home';
+        let currentTool = 'brush';
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        
+        // Variáveis para o 3D
+        let scene, camera, renderer, truckGroup, texture;
+        const R_CABIN_TEMPLATE_URL = "R Cabin 8x4 (High Roof).jpg";
+
+        // --- Gerenciamento de Páginas ---
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId;
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // --- Editor: Ferramentas e Canvas ---
+        function resizeCanvas() {
+            mainCanvas.width = 4096;
+            mainCanvas.height = 4096;
+            update3DTexture();
+        }
+
+        function loadTemplate() {
+            ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+            const templateImage = new Image();
+            templateImage.crossOrigin = "anonymous";
+            templateImage.onload = function() {
+                ctx.drawImage(templateImage, 0, 0, mainCanvas.width, mainCanvas.height);
+                update3DTexture();
+            };
+            templateImage.src = R_CABIN_TEMPLATE_URL;
+        }
+
+        function draw(e) {
+            if (!isDrawing || currentTool !== 'brush') return;
+            ctx.strokeStyle = colorPicker.value;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 100;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e._x, e._y);
+            ctx.stroke();
+            [lastX, lastY] = [e._x, e._y];
+            update3DTexture();
+        }
+
+        function getMousePos(canvas, event) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            return {
+                x: (event.clientX - rect.left) * scaleX,
+                y: (event.clientY - rect.top) * scaleY
+            };
+        }
+
+        // Event Listeners do Canvas
+        mainCanvas.addEventListener('mousedown', (e) => {
+            if (currentTool !== 'brush') return;
+            isDrawing = true;
+            const mousePos = getMousePos(mainCanvas, e);
+            [lastX, lastY] = [mousePos.x, mousePos.y];
+        });
+        mainCanvas.addEventListener('mousemove', (e) => {
+            const mousePos = getMousePos(mainCanvas, e);
+            e._x = mousePos.x;
+            e._y = mousePos.y;
+            draw(e);
+        });
+        mainCanvas.addEventListener('mouseup', () => isDrawing = false);
+        mainCanvas.addEventListener('mouseout', () => isDrawing = false);
+        window.addEventListener('resize', resizeCanvas);
+        loadTemplateBtn.addEventListener('click', loadTemplate);
+
+        toolButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toolButtons.forEach(b => b.classList.remove('active-tool'));
+                btn.classList.add('active-tool');
+                currentTool = btn.dataset.tool;
+                toolInfoDisplay.textContent = `Ferramenta: ${btn.title}`;
+                toolInfoDisplay.classList.remove('hidden');
+            });
+        });
+        
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, mainCanvas.width, mainCanvas.height);
+                    update3DTexture();
+                }
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // --- Gerador IA (Simulação) ---
+        aiPrompt.addEventListener('input', () => {
+            generateAiBtn.disabled = aiPrompt.value.trim() === '';
+        });
+
+        const tagButtons = document.querySelectorAll('.tag-btn');
+        tagButtons.forEach(tag => {
+            tag.addEventListener('click', () => {
+                aiPrompt.value += ` ${tag.textContent}`;
+                generateAiBtn.disabled = false;
+            });
+        });
+
+        function generateAI(imageSource = null) {
+            aiResult.classList.remove('hidden');
+            aiLoadingText.classList.remove('hidden');
+            
+            // Simula a geração da IA
+            setTimeout(() => {
+                let generatedImageURL;
+                if (imageSource) {
+                    generatedImageURL = `https://placehold.co/800x600/d4af37/1a1a1a?text=AI+Generated+from+Editor`;
+                } else {
+                    const randomId = Math.floor(Math.random() * 1000) + 1;
+                    generatedImageURL = `https://placehold.co/800x600/d4af37/1a1a1a?text=AI-Generated+Skin+${randomId}`;
+                }
+                
+                aiResultImage.src = generatedImageURL;
+                aiLoadingText.classList.add('hidden');
+            }, 3000);
+        }
+
+        generateAiBtn.addEventListener('click', () => {
+            generateAI();
+        });
+
+        generateFromEditorBtn.addEventListener('click', () => {
+            showPage('ai-generator');
+            // Obtém a URL da imagem do canvas para passar para a simulação da IA
+            const editorImageURL = mainCanvas.toDataURL("image/png");
+            generateAI(editorImageURL);
+        });
+
+        // --- Visualizador 3D (Three.js) ---
+        function init3DViewer() {
+            const container = document.getElementById('threeDViewer');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, canvas: container, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Luzes
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(2, 5, 5);
+            scene.add(directionalLight);
+
+            // Câmera
+            camera.position.z = 3;
+            camera.position.y = 0.5;
+
+            // Grupo para o caminhão
+            truckGroup = new THREE.Group();
+            scene.add(truckGroup);
+
+            // Textura do canvas
+            texture = new THREE.CanvasTexture(mainCanvas);
+            const material = new THREE.MeshStandardMaterial({
+                map: texture,
+                metalness: 0.8,
+                roughness: 0.2
+            });
+
+            // Geometria do caminhão (simulação simplificada da Scania S)
+            const cabine = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.2, 2.5), material);
+            cabine.position.set(0, 0.6, 0);
+            truckGroup.add(cabine);
+
+            const parachoque = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.2, 0.5), material);
+            parachoque.position.set(0, 0, 1.5);
+            truckGroup.add(parachoque);
+
+            const teto = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 2.5), material);
+            teto.position.set(0, 1.2, 0);
+            truckGroup.add(teto);
+
+            const rodaMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.9, roughness: 0.5 });
+            const rodaGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.2, 32);
+
+            const roda1 = new THREE.Mesh(rodaGeometry, rodaMaterial);
+            roda1.rotation.z = Math.PI / 2;
+            roda1.position.set(-0.7, 0.2, 0.5);
+            truckGroup.add(roda1);
+
+            const roda2 = new THREE.Mesh(rodaGeometry, rodaMaterial);
+            roda2.rotation.z = Math.PI / 2;
+            roda2.position.set(0.7, 0.2, 0.5);
+            truckGroup.add(roda2);
+
+            const roda3 = new THREE.Mesh(rodaGeometry, rodaMaterial);
+            roda3.rotation.z = Math.PI / 2;
+            roda3.position.set(-0.7, 0.2, -0.5);
+            truckGroup.add(roda3);
+
+            const roda4 = new THREE.Mesh(rodaGeometry, rodaMaterial);
+            roda4.rotation.z = Math.PI / 2;
+            roda4.position.set(0.7, 0.2, -0.5);
+            truckGroup.add(roda4);
+
+            // Animação para rotação do caminhão
+            function animate() {
+                requestAnimationFrame(animate);
+                truckGroup.rotation.y += 0.005;
+                renderer.render(scene, camera);
+            }
+
+            animate();
+            
+            // Gerenciar o redimensionamento da janela
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+        
+        // Função para atualizar a textura 3D
+        function update3DTexture() {
+            // Verifica se a textura foi inicializada antes de tentar atualizar
+            if (texture) {
+                texture.needsUpdate = true;
+            }
+        }
+
+        // --- FAQ Acordeão ---
+        const accordionBtns = document.querySelectorAll('.accordion-btn');
+        accordionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                const arrow = btn.querySelector('span:last-child');
+                const isExpanded = content.classList.contains('active');
+
+                document.querySelectorAll('.accordion-content.active').forEach(c => {
+                    c.classList.remove('active');
+                    c.style.maxHeight = '0';
+                    c.previousElementSibling.querySelector('span:last-child').style.transform = 'rotate(0deg)';
+                });
+
+                if (!isExpanded) {
+                    content.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    arrow.style.transform = 'rotate(180deg)';
+                } else {
+                    content.classList.remove('active');
+                    content.style.maxHeight = '0';
+                    arrow.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+
+        // --- Menu Mobile ---
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Inicialização
+        window.onload = () => {
+            init3DViewer();
+            resizeCanvas();
+            loadTemplate();
+        };
+    </script>
+</body>
+</html>
