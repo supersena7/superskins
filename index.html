@@ -1,216 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Super Sena — Skin Studio Avançado</title>
+<title>Super Sena — Skin Studio 4096x4096 + IA</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#071018; --card:#071a22; --accent:#f0b429; --muted:#98b4bb;
-  font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:linear-gradient(180deg,#041018 0%,#071427 60%);color:#e6f6f9;}
-.wrap{max-width:1600px;margin:12px auto;padding:12px;display:flex;flex-direction:column;gap:12px;}
-header{display:flex;gap:12px;align-items:center;}
-.logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018;font-size:22px;}
-h1{font-size:22px;margin:0;}
-p.lead{color:var(--muted);}
-.main{display:grid;grid-template-columns:1fr 360px;gap:16px;}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);}
-.editor{border-radius:12px;overflow:hidden;position:relative;background:#fff;display:flex;align-items:center;justify-content:center;}
-#view{background:#fff;display:block;border-radius:6px;}
-.controls{display:flex;flex-direction:column;gap:10px;}
-input[type="range"]{width:100%;}
-label{font-size:13px;color:var(--muted);}
-.btn{background:var(--accent);color:#071018;padding:10px 12px;border-radius:10px;font-weight:700;border:none;cursor:pointer;}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);}
-.small{font-size:13px;color:var(--muted);}
-.row{display:flex;gap:8px;align-items:center;}
-.rightPanel{display:flex;flex-direction:column;gap:10px;}
-ul.layers{list-style:none;padding:0;margin:0;max-height:220px;overflow:auto;}
-ul.layers li{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:rgba(0,0,0,0.75);padding:10px 14px;border-radius:8px;color:#fff;display:none;z-index:9999;}
-footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
-@media(max-width:980px){.main{grid-template-columns:1fr;}.editor{height:500px;}}
+  :root{
+    --bg:#071018; --card:#071a22; --accent:#f0b429; --muted:#98b4bb; --glass:rgba(255,255,255,0.03);
+    font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:linear-gradient(180deg,#041018 0%, #071427 60%);color:#e6f6f9;}
+  .wrap{max-width:1400px;margin:12px auto;padding:12px;display:flex;flex-direction:column;gap:12px;}
+  header{display:flex;gap:12px;align-items:center;}
+  .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018;font-size:22px;}
+  h1{margin:0;font-size:22px;}
+  p.lead{color:var(--muted);margin:4px 0 0;}
+  .main{display:flex;gap:12px;}
+  .editor{flex:2;position:relative;overflow:hidden;background:#fff;border-radius:12px;display:flex;justify-content:center;align-items:center;}
+  canvas#view{background:#fff;cursor:grab;}
+  .controls{flex:1;display:flex;flex-direction:column;gap:10px;}
+  input, select, textarea{width:100%;padding:6px;border-radius:6px;background:transparent;border:1px solid rgba(0,0,0,0.1);color:#071018;}
+  .btn{background:var(--accent);color:#071018;padding:10px 12px;border-radius:10px;font-weight:700;border:none;cursor:pointer;margin-top:4px;}
+  .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.1);color:#071018;}
+  ul.layers{list-style:none;padding:0;margin:0;max-height:220px;overflow:auto;}
+  ul.layers li{padding:6px;border-radius:6px;background:rgba(0,0,0,0.05);margin-bottom:4px;cursor:pointer;}
+  #layerControls{display:none;}
+  footer{display:flex;justify-content:space-between;gap:8px;color:var(--muted);}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header>
-  <div class="logo">SS</div>
-  <div>
-    <h1>Super Sena — Skin Studio Avançado</h1>
-    <p class="lead">Editor 4096×4096 — camadas, texto, filtros, recorte e export PNG.</p>
+  <header>
+    <div class="logo">SS</div>
+    <div>
+      <h1>Super Sena — Skin Studio Pro (IA)</h1>
+      <p class="lead">Editor 4096×4096 — camadas, texto, filtros, zoom, mover, gerar IA e export PNG</p>
+    </div>
+  </header>
+
+  <div style="display:flex;gap:12px;">
+    <a class="btn ghost" href="https://instagram.com/supersena7" target="_blank">Instagram</a>
+    <a class="btn ghost" href="https://discord.gg/8SzFU4BnnB" target="_blank">Discord</a>
   </div>
-</header>
 
-<div style="display:flex;gap:8px;flex-wrap:wrap;">
-  <a class="btn" href="#studio">Ir para Studio</a>
-  <a class="btn ghost" href="https://instagram.com/supersena7" target="_blank">Instagram</a>
-  <a class="btn ghost" href="https://discord.gg/8SzFU4BnnB" target="_blank">Discord</a>
+  <div class="main">
+    <div class="controls">
+      <h3>Camadas / Adicionar</h3>
+      <label>Upload template</label>
+      <input id="templateFile" type="file" accept="image/*"/>
+      <label>Upload imagem/logo</label>
+      <input id="imageFile" type="file" accept="image/*"/>
+      <label>Adicionar texto</label>
+      <input id="textInput" placeholder="Texto da skin"/>
+      <select id="fontSelect">
+        <option>Inter</option><option>Arial</option><option>Georgia</option><option>Impact</option>
+      </select>
+      <input id="textSize" type="range" min="12" max="400" value="72"/>
+      <input id="textColor" type="color" value="#000000"/>
+      <button id="addTextBtn" class="btn ghost">Adicionar Texto</button>
+
+      <h3>Camadas</h3>
+      <ul id="layersList" class="layers"></ul>
+
+      <div id="layerControls">
+        <h4>Controle camada selecionada</h4>
+        <label>Escala</label><input id="layerScale" type="range" min="0.1" max="3" step="0.01" value="1"/>
+        <label>Rotação</label><input id="layerRot" type="range" min="-180" max="180" value="0"/>
+        <label>Opacidade</label><input id="layerOpacity" type="range" min="0" max="1" step="0.01" value="1"/>
+        <button id="delLayer" class="btn ghost">Remover</button>
+        <button id="centerLayer" class="btn ghost">Centralizar</button>
+        <button id="flipH" class="btn ghost">Flip H</button>
+        <button id="flipV" class="btn ghost">Flip V</button>
+        <button id="bringFront" class="btn ghost">Trazer Frente</button>
+        <button id="sendBack" class="btn ghost">Mandar Fundo</button>
+      </div>
+
+      <h3>Geração de Skin IA</h3>
+      <input id="iaStyle" placeholder="Estilo (ex: futurista, neon)"/>
+      <input id="iaColors" placeholder="Cores principais"/>
+      <input id="iaLogos" placeholder="Logos ou símbolos"/>
+      <input id="iaDetail" placeholder="Limpa ou cheia de detalhes"/>
+      <input id="iaEffects" placeholder="Efeitos especiais"/>
+      <button id="generateIA" class="btn">Gerar Skin IA</button>
+
+      <h3>Export / Projeto</h3>
+      <button id="exportWith" class="btn">Exportar com Template</button>
+      <button id="exportClean" class="btn ghost">Exportar Limpa</button>
+      <button id="saveProj" class="btn ghost">Salvar Projeto</button>
+      <button id="loadProj" class="btn ghost">Carregar Projeto</button>
+      <button id="resetProj" class="btn ghost">Resetar</button>
+    </div>
+
+    <div class="editor">
+      <canvas id="view" width="800" height="800"></canvas>
+    </div>
+  </div>
+
+  <footer>
+    <div>© Super Sena Skin Studio</div>
+    <div>
+      <a href="https://instagram.com/supersena7" target="_blank">Instagram</a>
+      <a href="https://discord.gg/8SzFU4BnnB" target="_blank">Discord</a>
+    </div>
+  </footer>
 </div>
-
-<section id="studio" class="main" style="margin-top:12px;">
-<div class="card">
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-<div style="flex:1;min-width:240px" class="controls">
-
-<label>Upload template (PNG/JPG 4096×4096)</label>
-<input id="templateFile" type="file" accept="image/*"/>
-<label>Upload imagem/logo (sticker)</label>
-<input id="imageFile" type="file" accept="image/*"/>
-
-<div class="row">
-<label>Adicionar texto</label>
-<input id="textInput" placeholder="Texto da skin" style="flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"/>
-<button id="addTextBtn" class="btn ghost">Adicionar</button>
-</div>
-
-<label>Fonte</label>
-<select id="fontSelect" style="width:100%;padding:6px;border-radius:6px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit">
-<option value="Inter">Inter</option>
-<option value="Arial">Arial</option>
-<option value="Georgia">Georgia</option>
-<option value="Impact">Impact</option>
-</select>
-
-<label>Tamanho do texto</label>
-<input id="textSize" type="range" min="12" max="400" value="72"/>
-<label>Cor do texto</label>
-<input id="textColor" type="color" value="#ffffff"/>
-
-<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
-<button id="exportClean" class="btn">Exportar Skin (Sem Template)</button>
-<button id="exportWith" class="btn ghost">Exportar Skin (Com Template)</button>
-</div>
-
-<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
-<button id="saveProj" class="btn">Salvar Projeto</button>
-<button id="loadProj" class="btn ghost">Carregar Projeto</button>
-<button id="resetProj" class="btn ghost">Resetar</button>
-</div>
-
-</div>
-
-<div class="editor" style="flex:2;min-width:420px;height:700px;">
-<canvas id="view"></canvas>
-</div>
-</div>
-</div>
-
-<aside class="card rightPanel">
-<div>
-<strong>Status:</strong> <span id="metaInfo" class="small">Pronto</span>
-</div>
-<div style="margin-top:8px">
-<div class="small">Camadas</div>
-<ul class="layers" id="layersList"></ul>
-<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-<button id="bringFront" class="btn ghost">Trazer Frente</button>
-<button id="sendBack" class="btn ghost">Mandar Fundo</button>
-</div>
-</div>
-
-<div id="layerControls" style="display:none;margin-top:8px">
-<div class="small">Controle da camada</div>
-<label>Escala</label>
-<input id="layerScale" type="range" min="0.05" max="3" step="0.01" value="1"/>
-<label>Rotação (°)</label>
-<input id="layerRot" type="range" min="-180" max="180" step="1" value="0"/>
-<label>Opacidade</label>
-<input id="layerOpacity" type="range" min="0" max="1" step="0.01" value="1"/>
-<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
-<button id="delLayer" class="btn ghost">Remover</button>
-<button id="centerLayer" class="btn ghost">Centralizar</button>
-<button id="flipH" class="btn ghost">Inverter H</button>
-<button id="flipV" class="btn ghost">Inverter V</button>
-</div>
-</div>
-
-</aside>
-</section>
-
-<footer>
-<div>© Super Sena — Skin Studio Avançado</div>
-<div>
-<a href="https://instagram.com/supersena7" style="color:var(--muted);margin-right:10px">Instagram</a>
-<a href="https://discord.gg/8SzFU4BnnB" style="color:var(--muted)">Discord</a>
-</div>
-</footer>
-
-<div class="toast" id="toast">Exportando...</div>
 
 <script>
-// === CONFIGURAÇÃO BASE ===
 const view=document.getElementById('view');
 const ctx=view.getContext('2d',{alpha:true});
 const exportSize=4096;
-const off=document.createElement('canvas');
-off.width=exportSize; off.height=exportSize;
+const off=document.createElement('canvas'); off.width=exportSize; off.height=exportSize;
 const offCtx=off.getContext('2d',{alpha:true});
+let layers=[],selectedId=null,dragging=false,dragOffset={x:0,y:0},zoom=1,pan={x:0,y:0};
 let templateImg=null;
-let layers=[];
-let selectedId=null;
-let dragging=false, dragOffset={x:0,y:0};
-let zoom=1, pan={x:0,y:0};
-function showToast(msg){const t=document.getElementById('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2200);}
 
-// === AJUSTE DO CANVAS ===
-function fitCanvas(){
-  const rect=view.parentElement.getBoundingClientRect();
-  view.width=rect.width;
-  view.height=rect.height;
-  draw();
-}
-window.addEventListener('resize', fitCanvas);
+function showToast(msg){alert(msg);} // simplificado
+
+function fitCanvas(){view.width=view.parentElement.clientWidth; view.height=view.parentElement.clientHeight; draw();}
+window.addEventListener('resize',fitCanvas);
 fitCanvas();
 
-// === HELPER ===
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 function viewToExport(x,y){
   const rect=view.getBoundingClientRect();
-  const vx=(x-rect.left)/zoom-pan.x;
-  const vy=(y-rect.top)/zoom-pan.y;
+  const vx=(x-rect.left)/zoom - pan.x;
+  const vy=(y-rect.top)/zoom - pan.y;
   return {x:vx*exportSize, y:vy*exportSize};
 }
 
-// === CARREGAR TEMPLATE ===
-document.getElementById('templateFile').addEventListener('change',e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const url=URL.createObjectURL(f); const i=new Image();
-  i.onload=()=>{ templateImg=i; draw(); document.getElementById('metaInfo').innerText='Template carregado'; }
-  i.src=url;
-});
-
-// === CARREGAR IMAGEM ===
-document.getElementById('imageFile').addEventListener('change',e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const url=URL.createObjectURL(f); const i=new Image();
-  i.onload=()=>{
-    const id=uid();
-    const scale=Math.min(1,(exportSize*0.25)/Math.max(i.width,i.height));
-    layers.push({id,type:'image',img:i,x:exportSize/2,y:exportSize/2,scale,rot:0,opacity:1,flipH:false,flipV:false,filters:{brightness:1,contrast:1,saturation:1,blur:0}});
-    rebuildLayersList(); draw();
-  }
-  i.src=url;
-});
-
-// === ADICIONAR TEXTO ===
-document.getElementById('addTextBtn').addEventListener('click',()=>{
-  const txt=document.getElementById('textInput').value.trim(); if(!txt) return alert('Digite texto');
-  const id=uid(); const size=parseInt(document.getElementById('textSize').value,10)||72;
-  const font=document.getElementById('fontSelect').value; const color=document.getElementById('textColor').value;
-  layers.push({id,type:'text',text:txt,x:exportSize/2,y:exportSize/2,scale:1,rot:0,opacity:1,font,size,color,flipH:false,flipV:false});
-  rebuildLayersList(); draw(); document.getElementById('textInput').value='';
-});
-
-// === DESENHAR CAMADAS ===
+// Funções básicas
 function composeToOff(){
   offCtx.clearRect(0,0,exportSize,exportSize);
   if(templateImg) offCtx.drawImage(templateImg,0,0,exportSize,exportSize);
-  for(const l of layers){
+  layers.forEach(l=>{
     offCtx.save();
     offCtx.globalAlpha=l.opacity||1;
     offCtx.translate(l.x,l.y);
@@ -218,158 +141,119 @@ function composeToOff(){
     if(l.flipV) offCtx.scale(1,-1);
     offCtx.rotate((l.rot||0)*Math.PI/180);
     if(l.type==='image'){
-      if(l.filters){
-        offCtx.filter=`brightness(${l.filters.brightness}) contrast(${l.filters.contrast}) saturate(${l.filters.saturation}) blur(${l.filters.blur}px)`;
-      }
-      const w=l.img.width*(l.scale||1), h=l.img.height*(l.scale||1);
-      offCtx.drawImage(l.img,-w/2,-h/2,w,h);
-      offCtx.filter='none';
-    } else if(l.type==='text'){
+      offCtx.drawImage(l.img,-(l.img.width*l.scale)/2,-(l.img.height*l.scale)/2,l.img.width*l.scale,l.img.height*l.scale);
+    } else {
       offCtx.font=`${l.size||72}px ${l.font||'Inter'}`;
-      offCtx.fillStyle=l.color||'#fff';
+      offCtx.fillStyle=l.color||'#000';
       offCtx.textAlign='center'; offCtx.textBaseline='middle';
-      offCtx.scale(l.scale||1,l.scale||1);
       offCtx.fillText(l.text,0,0);
     }
     offCtx.restore();
-  }
+  });
 }
+
 function draw(){
+  ctx.setTransform(1,0,0,1,0,0);
   ctx.clearRect(0,0,view.width,view.height);
-  ctx.save();
-  ctx.translate(view.width/2+pan.x*zoom, view.height/2+pan.y*zoom);
-  ctx.scale(zoom,zoom);
+  ctx.scale(zoom,zoom); ctx.translate(pan.x,pan.y);
   composeToOff();
-  ctx.drawImage(off,-exportSize/2,-exportSize/2,exportSize,exportSize);
-  ctx.restore();
+  ctx.drawImage(off,0,0,exportSize,exportSize);
 }
 
-// === ARRASTAR E SELECIONAR CAMADAS ===
-view.addEventListener('mousedown',e=>{
-  const pos=viewToExport(e.clientX,e.clientY);
-  for(let i=layers.length-1;i>=0;i--){
-    const l=layers[i];
-    let w=0,h=0;
-    if(l.type==='image'){w=l.img.width*l.scale;h=l.img.height*l.scale;}
-    else{ctx.font=`${l.size}px ${l.font}`; const metrics=ctx.measureText(l.text); w=metrics.width*1.1; h=l.size;}
-    const left=l.x-w/2, right=l.x+w/2, top=l.y-h/2, bottom=l.y+h/2;
-    if(pos.x>=left && pos.x<=right && pos.y>=top && pos.y<=bottom){
-      selectedId=l.id; dragging=true;
-      dragOffset.x=pos.x-l.x; dragOffset.y=pos.y-l.y;
-      showLayerControls();
-      draw();
-      return;
-    }
-  }
-  selectedId=null; hideLayerControls(); draw();
-});
-view.addEventListener('mousemove',e=>{
-  if(!dragging) return;
-  const pos=viewToExport(e.clientX,e.clientY);
-  const l=layers.find(a=>a.id===selectedId); if(!l) return;
-  l.x=pos.x-dragOffset.x;
-  l.y=pos.y-dragOffset.y;
-  draw();
-});
-view.addEventListener('mouseup',()=>dragging=false);
-view.addEventListener('mouseleave',()=>dragging=false);
-
-// === ZOOM ===
-view.addEventListener('wheel',e=>{
-  e.preventDefault();
-  const delta = e.deltaY>0 ? 0.9 : 1.1;
-  zoom*=delta; zoom=Math.max(0.1,Math.min(zoom,10));
-  draw();
+// Adicionar imagens
+document.getElementById('imageFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const i=new Image();
+  i.onload=()=>{ layers.push({id:Date.now(),type:'image',img:i,x:exportSize/2,y:exportSize/2,scale:1,rot:0,opacity:1}); draw(); rebuildLayersList();}
+  i.src=URL.createObjectURL(f);
 });
 
-// === LAYER CONTROLS ===
+// Adicionar template
+document.getElementById('templateFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const i=new Image();
+  i.onload=()=>{ templateImg=i; draw();}
+  i.src=URL.createObjectURL(f);
+});
+
+// Adicionar texto
+document.getElementById('addTextBtn').addEventListener('click',()=>{
+  const txt=document.getElementById('textInput').value.trim(); if(!txt)return;
+  layers.push({id:Date.now(),type:'text',text:txt,x:exportSize/2,y:exportSize/2,scale:1,rot:0,opacity:1,font:document.getElementById('fontSelect').value,size:parseInt(document.getElementById('textSize').value),color:document.getElementById('textColor').value});
+  document.getElementById('textInput').value='';
+  draw(); rebuildLayersList();
+});
+
+// Camadas
 function rebuildLayersList(){
   const ul=document.getElementById('layersList'); ul.innerHTML='';
   layers.forEach(l=>{
-    const li=document.createElement('li');
-    li.innerHTML=`<span>${l.type==='text'?l.text:'IMG'}</span>`;
-    li.addEventListener('click',()=>{selectedId=l.id; showLayerControls(); draw();});
+    const li=document.createElement('li'); li.innerText=l.type==='text'?l.text:'Imagem'; li.onclick=()=>{selectedId=l.id;document.getElementById('layerControls').style.display='block';draw(); updateLayerControls();}
     ul.appendChild(li);
   });
 }
-function showLayerControls(){
-  const l=layers.find(a=>a.id===selectedId);
-  const lc=document.getElementById('layerControls');
-  if(!l){lc.style.display='none';return;}
-  lc.style.display='block';
+function updateLayerControls(){
+  const l=layers.find(x=>x.id===selectedId); if(!l)return;
   document.getElementById('layerScale').value=l.scale||1;
   document.getElementById('layerRot').value=l.rot||0;
   document.getElementById('layerOpacity').value=l.opacity||1;
 }
-function hideLayerControls(){document.getElementById('layerControls').style.display='none';}
 
-document.getElementById('layerScale').addEventListener('input',e=>{
-  const l=layers.find(a=>a.id===selectedId); if(!l) return;
-  l.scale=parseFloat(e.target.value); draw();
-});
-document.getElementById('layerRot').addEventListener('input',e=>{
-  const l=layers.find(a=>a.id===selectedId); if(!l) return;
-  l.rot=parseFloat(e.target.value); draw();
-});
-document.getElementById('layerOpacity').addEventListener('input',e=>{
-  const l=layers.find(a=>a.id===selectedId); if(!l) return;
-  l.opacity=parseFloat(e.target.value); draw();
-});
-document.getElementById('delLayer').addEventListener('click',()=>{
-  layers=layers.filter(a=>a.id!==selectedId); selectedId=null; hideLayerControls(); rebuildLayersList(); draw();
-});
-document.getElementById('centerLayer').addEventListener('click',()=>{
-  const l=layers.find(a=>a.id===selectedId); if(!l) return;
-  l.x=exportSize/2; l.y=exportSize/2; draw();
-});
-document.getElementById('flipH').addEventListener('click',()=>{
-  const l=layers.find(a=>a.id===selectedId); if(!l) return;
-  l.flipH=!l.flipH; draw();
-});
-document.getElementById('flipV').addEventListener('click',()=>{
-  const l=layers.find(a=>a.id===selectedId); if(!l) return;
-  l.flipV=!l.flipV; draw();
-});
-document.getElementById('bringFront').addEventListener('click',()=>{
-  if(!selectedId) return;
-  const index=layers.findIndex(a=>a.id===selectedId);
-  if(index===-1) return;
-  const l=layers.splice(index,1)[0]; layers.push(l); rebuildLayersList(); draw();
-});
-document.getElementById('sendBack').addEventListener('click',()=>{
-  if(!selectedId) return;
-  const index=layers.findIndex(a=>a.id===selectedId);
-  if(index===-1) return;
-  const l=layers.splice(index,1)[0]; layers.unshift(l); rebuildLayersList(); draw();
-});
+// Controls inputs
+document.getElementById('layerScale').addEventListener('input',e=>{ const l=layers.find(x=>x.id===selectedId); if(!l)return; l.scale=parseFloat(e.target.value); draw();});
+document.getElementById('layerRot').addEventListener('input',e=>{ const l=layers.find(x=>x.id===selectedId); if(!l)return; l.rot=parseFloat(e.target.value); draw();});
+document.getElementById('layerOpacity').addEventListener('input',e=>{ const l=layers.find(x=>x.id===selectedId); if(!l)return; l.opacity=parseFloat(e.target.value); draw();});
+document.getElementById('delLayer').addEventListener('click',()=>{ layers=layers.filter(x=>x.id!==selectedId); selectedId=null; rebuildLayersList(); draw();});
+document.getElementById('centerLayer').addEventListener('click',()=>{ const l=layers.find(x=>x.id===selectedId); if(!l)return; l.x=exportSize/2;l.y=exportSize/2;draw();});
+document.getElementById('flipH').addEventListener('click',()=>{ const l=layers.find(x=>x.id===selectedId); if(!l)return;l.flipH=!l.flipH;draw();});
+document.getElementById('flipV').addEventListener('click',()=>{ const l=layers.find(x=>x.id===selectedId); if(!l)return;l.flipV=!l.flipV;draw();});
+document.getElementById('bringFront').addEventListener('click',()=>{ const idx=layers.findIndex(x=>x.id===selectedId); if(idx>-1){ const [it]=layers.splice(idx,1); layers.push(it); draw(); rebuildLayersList();}});
+document.getElementById('sendBack').addEventListener('click',()=>{ const idx=layers.findIndex(x=>x.id===selectedId); if(idx>-1){ const [it]=layers.splice(idx,1); layers.unshift(it); draw(); rebuildLayersList();});
 
-// === EXPORTAR ===
-document.getElementById('exportClean').addEventListener('click',()=>{
-  const tmp=templateImg; templateImg=null; composeToOff();
-  const dataURL=off.toDataURL('image/png'); templateImg=tmp;
-  const a=document.createElement('a'); a.href=dataURL; a.download='skin.png'; a.click();
-});
-document.getElementById('exportWith').addEventListener('click',()=>{
-  composeToOff();
-  const dataURL=off.toDataURL('image/png');
-  const a=document.createElement('a'); a.href=dataURL; a.download='skin_with_template.png'; a.click();
-});
-
-// === SALVAR/CARREGAR PROJETO ===
-document.getElementById('saveProj').addEventListener('click',()=>{
-  const data=JSON.stringify({layers,template:templateImg?templateImg.src:null});
-  localStorage.setItem('skinProj',data); showToast('Projeto salvo localmente');
-});
-document.getElementById('loadProj').addEventListener('click',()=>{
-  const data=localStorage.getItem('skinProj'); if(!data) return alert('Nenhum projeto salvo');
-  const obj=JSON.parse(data); layers=obj.layers||[];
-  if(obj.template){
-    templateImg=new Image(); templateImg.onload=()=>draw(); templateImg.src=obj.template;
+// Drag layers
+let mouseDown=false;
+view.addEventListener('mousedown',e=>{
+  mouseDown=true; view.style.cursor='grabbing';
+  const p=viewToExport(e.clientX,e.clientY);
+  for(let i=layers.length-1;i>=0;i--){
+    const l=layers[i];
+    const dx=p.x-l.x,dy=p.y-l.y;
+    let w=0,h=0;
+    if(l.type==='image'){ w=l.img.width*l.scale/2; h=l.img.height*l.scale/2;}else{w=(l.text.length*l.size*0.5)*l.scale; h=l.size*l.scale/2;}
+    if(Math.abs(dx)<=w && Math.abs(dy)<=h){selectedId=l.id;dragOffset={x:dx,y:dy}; updateLayerControls(); draw(); break;}
   }
-  rebuildLayersList(); draw();
 });
-document.getElementById('resetProj').addEventListener('click',()=>{
-  layers=[]; templateImg=null; selectedId=null; hideLayerControls(); rebuildLayersList(); draw();
+window.addEventListener('mousemove',e=>{
+  if(!mouseDown || !selectedId) return;
+  const p=viewToExport(e.clientX,e.clientY);
+  const l=layers.find(x=>x.id===selectedId); if(!l)return;
+  l.x=p.x-dragOffset.x; l.y=p.y-dragOffset.y; draw();
+});
+window.addEventListener('mouseup',()=>{mouseDown=false;view.style.cursor='grab';});
+
+// Export
+function exportPNG(includeTemplate){
+  composeToOff();
+  const a=document.createElement('a');
+  a.href=off.toDataURL('image/png');
+  a.download=includeTemplate?'skin_with_template.png':'skin_clean.png';
+  a.click();
+}
+document.getElementById('exportWith').addEventListener('click',()=>exportPNG(true));
+document.getElementById('exportClean').addEventListener('click',()=>exportPNG(false));
+
+// IA skin (demo)
+document.getElementById('generateIA').addEventListener('click',async()=>{
+  const style=document.getElementById('iaStyle').value;
+  const colors=document.getElementById('iaColors').value;
+  const logos=document.getElementById('iaLogos').value;
+  const detail=document.getElementById('iaDetail').value;
+  const effects=document.getElementById('iaEffects').value;
+  // Aqui você chamaria a API de IA (OpenAI ou Stable Diffusion) e retornaria uma imagem 4096x4096
+  showToast('Geração de IA em demo... Adicione sua integração com API real.');
+  // Exemplo: adicionar placeholder
+  const img=new Image(); img.src='https://via.placeholder.com/4096.png?text=Skin+IA';
+  img.onload=()=>{ layers.push({id:Date.now(),type:'image',img,x:exportSize/2,y:exportSize/2,scale:1,rot:0,opacity:1}); draw(); rebuildLayersList();}
 });
 </script>
 </body>
