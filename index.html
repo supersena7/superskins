@@ -70,6 +70,13 @@
             font-size: 0.875rem;
             z-index: 20;
         }
+        /* Estilo para a barra de carregamento */
+        .loading-bar {
+            width: 0;
+            height: 4px;
+            background-color: #d4af37;
+            transition: width 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-zinc-900">
@@ -284,6 +291,12 @@
                 <div class="bg-charcoal rounded-3xl p-6 shadow-xl relative">
                     <img id="ai-result-image" src="https://placehold.co/800x600/333333/555555?text=Gerando+Skin..." class="w-full rounded-2xl" alt="AI Generated Skin">
                     <p id="ai-loading-text" class="absolute inset-0 flex items-center justify-center bg-zinc-900/80 text-white text-xl font-medium hidden">Gerando, por favor aguarde...</p>
+                    <!-- Loading bar container -->
+                    <div id="loading-container" class="mt-4 hidden">
+                        <div class="w-full bg-zinc-700 rounded-full h-1.5">
+                            <div id="loading-bar" class="loading-bar rounded-full h-1.5"></div>
+                        </div>
+                    </div>
                     <button class="mt-4 px-6 py-3 bg-white text-zinc-900 font-bold rounded-full shadow-lg hover:bg-golden hover:text-white transition-all">Abrir no Editor</button>
                 </div>
             </div>
@@ -374,6 +387,8 @@
         const aiLoadingText = document.getElementById('ai-loading-text');
         const generateFromEditorBtn = document.getElementById('generateFromEditorBtn');
         const toolInfoDisplay = document.getElementById('toolInfo');
+        const loadingBar = document.getElementById('loading-bar');
+        const loadingContainer = document.getElementById('loading-container');
         
         // Estado do editor
         let currentPage = 'home';
@@ -385,6 +400,10 @@
         // Variáveis para o 3D
         let scene, camera, renderer, truckGroup, texture;
         const R_CABIN_TEMPLATE_URL = "R Cabin 8x4 (High Roof).jpg";
+
+        // API Key para o Gemini (vazia para ser fornecida pelo ambiente de execução)
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
 
         // --- Gerenciamento de Páginas ---
         function showPage(pageId) {
@@ -482,7 +501,7 @@
             reader.readAsDataURL(file);
         });
 
-        // --- Gerador IA (Simulação) ---
+        // --- Gerador IA (Real) ---
         aiPrompt.addEventListener('input', () => {
             generateAiBtn.disabled = aiPrompt.value.trim() === '';
         });
@@ -494,25 +513,91 @@
                 generateAiBtn.disabled = false;
             });
         });
-
-        function generateAI(imageSource = null) {
+        
+        async function generateAI(imageSource = null) {
             aiResult.classList.remove('hidden');
             aiLoadingText.classList.remove('hidden');
-            
-            // Simula a geração da IA
-            setTimeout(() => {
-                let generatedImageURL;
-                if (imageSource) {
-                    generatedImageURL = `https://placehold.co/800x600/d4af37/1a1a1a?text=AI+Generated+from+Editor`;
-                } else {
-                    const randomId = Math.floor(Math.random() * 1000) + 1;
-                    generatedImageURL = `https://placehold.co/800x600/d4af37/1a1a1a?text=AI-Generated+Skin+${randomId}`;
+            loadingContainer.classList.remove('hidden');
+            loadingBar.style.width = '0%';
+            generateAiBtn.disabled = true;
+
+            const prompt = aiPrompt.value.trim() || 'uma skin de caminhão para euro truck simulator 2';
+            let exponentialDelay = 1000;
+            const maxRetries = 5;
+
+            // Simulação de progresso da barra
+            const progressInterval = setInterval(() => {
+                const currentWidth = parseFloat(loadingBar.style.width);
+                if (currentWidth < 90) {
+                    loadingBar.style.width = `${currentWidth + 2}%`;
                 }
+            }, 100);
+
+            let result = null;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const payload = {
+                        instances: [{ prompt: prompt }],
+                        parameters: { "sampleCount": 1 }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429) { // Too Many Requests
+                            throw new Error('Rate limit exceeded');
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    result = await response.json();
+                    break;
+                } catch (error) {
+                    console.error('Error generating AI image:', error);
+                    if (i < maxRetries - 1) {
+                        console.log(`Retrying in ${exponentialDelay / 1000} seconds...`);
+                        await new Promise(resolve => setTimeout(resolve, exponentialDelay));
+                        exponentialDelay *= 2;
+                    } else {
+                        // All retries failed
+                        break;
+                    }
+                }
+            }
+            
+            clearInterval(progressInterval);
+            loadingBar.style.width = '100%';
+
+            if (result && result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                const base64Data = result.predictions[0].bytesBase64Encoded;
+                const imageUrl = `data:image/png;base64,${base64Data}`;
+                aiResultImage.src = imageUrl;
                 
-                aiResultImage.src = generatedImageURL;
-                aiLoadingText.classList.add('hidden');
-            }, 3000);
+                // Opção para abrir no editor
+                const openInEditorBtn = aiResult.querySelector('button');
+                openInEditorBtn.onclick = () => {
+                    const tempImg = new Image();
+                    tempImg.onload = () => {
+                        ctx.drawImage(tempImg, 0, 0, mainCanvas.width, mainCanvas.height);
+                        update3DTexture();
+                        showPage('editor');
+                    };
+                    tempImg.src = imageUrl;
+                };
+
+            } else {
+                console.error('Failed to generate image from API.');
+                aiResultImage.src = 'https://placehold.co/800x600/cc0000/ffffff?text=Falha+na+Geração';
+            }
+            
+            aiLoadingText.classList.add('hidden');
+            loadingContainer.classList.add('hidden');
+            generateAiBtn.disabled = false;
         }
+
 
         generateAiBtn.addEventListener('click', () => {
             generateAI();
@@ -520,7 +605,6 @@
 
         generateFromEditorBtn.addEventListener('click', () => {
             showPage('ai-generator');
-            // Obtém a URL da imagem do canvas para passar para a simulação da IA
             const editorImageURL = mainCanvas.toDataURL("image/png");
             generateAI(editorImageURL);
         });
@@ -658,3 +742,4 @@
     </script>
 </body>
 </html>
+
