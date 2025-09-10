@@ -1,438 +1,156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Super Sena — Skin Studio (4096x4096) — Otimizado</title>
-  <meta name="description" content="Editor online de skins 4096x4096 para ETS2 — export sem template, salvar projeto, texto, camadas, filtros e export em PNG." />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Super Sena Skin Studio</title>
   <style>
-    :root{
-      --bg:#071018; --card:#071a22; --accent:#f0b429; --muted:#98b4bb; --glass:rgba(255,255,255,0.03);
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#041018 0%, #071427 60%);color:#e6f6f9}
-    .wrap{max-width:1400px;margin:12px auto;padding:14px}
-    header{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018;font-size:20px}
-    h1{font-size:20px;margin:0}
-    p.lead{color:var(--muted);margin:4px 0 0}
-    .main{display:grid;grid-template-columns:1fr 420px;gap:16px;margin-top:14px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-
-    /* Editor larger and responsive */
-    .editor{border-radius:12px;overflow:hidden;position:relative;background:#000;display:flex;align-items:center;justify-content:center}
-    #viewWrap{width:100%;height:calc(100vh - 220px);min-height:720px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#031018,#071a22);padding:12px}
-    canvas#view{max-width:100%;max-height:100%;background:#071416;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,0.6)}
-
-    .controls{display:flex;flex-direction:column;gap:10px}
-    input[type="range"]{width:100%}
-    label{font-size:13px;color:var(--muted)}
-    .btn{background:var(--accent);color:#071018;padding:10px 12px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-    .small{font-size:13px;color:var(--muted)}
-    .row{display:flex;gap:8px;align-items:center}
-    .rightPanel{display:flex;flex-direction:column;gap:10px}
-    ul.layers{list-style:none;padding:0;margin:0;max-height:320px;overflow:auto}
-    ul.layers li{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:rgba(0,0,0,0.75);padding:10px 14px;border-radius:8px;color:#fff;display:none;z-index:9999}
-    footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-
-    /* handles (visual only) */
-    .handle{position:absolute;width:12px;height:12px;border-radius:3px;background:var(--accent);border:2px solid rgba(255,255,255,0.1);display:none}
-
-    @media (max-width:1200px){.main{grid-template-columns:1fr 360px}.editor{min-height:520px}} 
+    body{margin:0;display:flex;height:100vh;overflow:hidden;background:#111;color:#fff;font-family:sans-serif}
+    .sidebar{width:240px;background:#1c1c1c;padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+    .editor{flex:1;display:flex;justify-content:center;align-items:center;background:#000;}
+    canvas{background:#222;max-width:100%;max-height:100%;}
+    button{padding:8px;border:none;border-radius:6px;background:#333;color:#fff;cursor:pointer;margin-bottom:6px}
+    button:hover{background:#444}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">SS</div>
-      <div>
-        <h1>Super Sena — Skin Studio Pro (Otimizado)</h1>
-        <p class="lead">Editor 4096×4096 — camadas, texto, filtros por camada, recorte básico e export em PNG.</p>
-      </div>
-    </header>
-
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-      <a class="btn" href="#studio">Ir para o Studio</a>
-      <a class="btn ghost" href="https://livepix.gg/eullersena" target="_blank">Apoie no Livepix</a>
-      <a class="btn ghost" href="https://discord.gg/8SzFU4BnnB" target="_blank">Discord</a>
-    </div>
-
-    <section id="studio" class="main" style="margin-top:12px">
-      <div class="card">
-        <h2>Skin Studio — Editor 4096×4096 (versão otimizada)</h2>
-        <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-          <div style="flex:1;min-width:260px" class="controls">
-
-            <label>Upload template (guia) — PNG/JPG (recomendado 4096×4096)</label>
-            <input id="templateFile" type="file" accept="image/*" />
-
-            <label style="margin-top:6px">Upload imagem/logo (sticker)</label>
-            <input id="imageFile" type="file" accept="image/*" />
-
-            <div class="row" style="margin-top:6px">
-              <label>Adicionar texto</label>
-              <input id="textInput" placeholder="Texto da skin" style="flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"/>
-              <button id="addTextBtn" class="btn ghost">Adicionar</button>
-            </div>
-
-            <div style="display:flex;gap:8px;margin-top:6px">
-              <div style="flex:1">
-                <label>Fonte</label>
-                <select id="fontSelect" style="width:100%;padding:6px;border-radius:6px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit">
-                  <option value="Inter">Inter</option>
-                  <option value="Arial">Arial</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Impact">Impact</option>
-                </select>
-              </div>
-              <div style="width:110px">
-                <label>Tamanho</label>
-                <input id="textSize" type="range" min="12" max="400" value="72">
-              </div>
-            </div>
-
-            <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
-              <label>Cor do texto</label>
-              <input id="textColor" type="color" value="#ffffff">
-            </div>
-
-            <div style="margin-top:10px">
-              <label>Filtros da camada selecionada</label>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-                <div>
-                  <label>Brilho</label>
-                  <input id="filterBrightness" type="range" min="0" max="2" step="0.01" value="1">
-                </div>
-                <div>
-                  <label>Contraste</label>
-                  <input id="filterContrast" type="range" min="0" max="2" step="0.01" value="1">
-                </div>
-                <div>
-                  <label>Saturação</label>
-                  <input id="filterSaturate" type="range" min="0" max="3" step="0.01" value="1">
-                </div>
-                <div>
-                  <label>Blur</label>
-                  <input id="filterBlur" type="range" min="0" max="10" step="0.1" value="0">
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top:10px">
-              <label>Opções de export</label>
-              <div style="display:flex;gap:8px;margin-top:8px">
-                <button id="exportClean" class="btn">Exportar (Sem Template)</button>
-                <button id="exportWith" class="btn ghost">Exportar (Com Template)</button>
-              </div>
-              <div style="margin-top:8px;display:flex;gap:8px">
-                <button id="saveProj" class="btn">Salvar Projeto</button>
-                <button id="loadProj" class="btn ghost">Carregar Projeto</button>
-                <button id="resetProj" class="btn ghost">Resetar</button>
-              </div>
-            </div>
-
-            <div style="margin-top:10px">
-              <div class="small">Atalhos: E = exportar (limpo), C = centralizar layer selecionada, Delete = remover layer, Ctrl+S = salvar.</div>
-            </div>
-
-          </div>
-
-          <div class="editor" style="flex:2;min-width:520px">
-            <div id="viewWrap">
-              <canvas id="view"></canvas>
-              <!-- handles (visual) -->
-              <div class="handle" id="h-tl"></div>
-              <div class="handle" id="h-tr"></div>
-              <div class="handle" id="h-bl"></div>
-              <div class="handle" id="h-br"></div>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:10px" class="small">Dica: Edite com o template visível, depois exporte sem template para gerar apenas a sua artwork (fundo transparente).</div>
-      </div>
-
-      <aside class="card rightPanel">
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div><strong>Status</strong></div>
-            <div id="metaInfo" class="small">Pronto</div>
-          </div>
-        </div>
-
-        <div style="margin-top:8px">
-          <div class="small">Camadas (arraste no canvas para posicionar)</div>
-          <ul class="layers" id="layersList"></ul>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="bringFront" class="btn ghost">Trazer Frente</button>
-            <button id="sendBack" class="btn ghost">Mandar Fundo</button>
-          </div>
-        </div>
-
-        <div style="margin-top:8px">
-          <div id="layerControls" style="display:none">
-            <div class="small">Controle da camada selecionada</div>
-            <label>Escala</label>
-            <input id="layerScale" type="range" min="0.05" max="3" step="0.01" value="1">
-            <label>Rotação (°)</label>
-            <input id="layerRot" type="range" min="-180" max="180" step="1" value="0">
-            <label>Opacidade</label>
-            <input id="layerOpacity" type="range" min="0" max="1" step="0.01" value="1">
-            <div style="display:flex;gap:8px;margin-top:6px">
-              <button id="delLayer" class="btn ghost">Remover</button>
-              <button id="centerLayer" class="btn ghost">Centralizar</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:10px">
-          <div class="small">Links úteis</div>
-          <div style="margin-top:6px;display:flex;flex-direction:column;gap:6px">
-            <a href="https://modding.scssoft.com/wiki/Documentation/Tools/Game_Archive_Packer" target="_blank" class="small">Game Archive Packer</a>
-            <a href="https://www.mods.studio/download" target="_blank" class="small">Mod Studio 2</a>
-            <a href="https://livepix.gg/eullersena" target="_blank" class="small">Apoiar no Livepix</a>
-          </div>
-        </div>
-
-      </aside>
-    </section>
-
-    <footer>
-      <div>© Super Sena — Skin Studio Prototype</div>
-      <div>
-        <a href="https://instagram.com/supersena7" style="color:var(--muted);margin-right:10px">Instagram</a>
-        <a href="https://discord.gg/8SzFU4BnnB" style="color:var(--muted)">Discord</a>
-      </div>
-    </footer>
+  <div class="sidebar">
+    <button id="add-image">+ Adicionar Imagem</button>
+    <button id="save-project">Salvar Projeto</button>
+    <button id="load-project">Carregar Projeto</button>
+    <button id="reset-project">Resetar</button>
+    <button id="export-with-template">Exportar com Template</button>
+    <button id="export-no-template">Exportar sem Template</button>
+  </div>
+  <div class="editor">
+    <canvas id="editor-canvas" width="900" height="600"></canvas>
   </div>
 
-  <div class="toast" id="toast">Exportando...</div>
-
   <script>
-  /*
-    Arquitetura modular (single-file):
-    - LayersManager: operação de camadas
-    - Renderer: compõe offscreen (4096x4096) e preview
-    - ExportManager: exporta PNG
-    - ProjectManager: salvar/carregar
-    - UI wiring
-  */
-
-  // constants
-  const EXPORT_SIZE = 4096;
-
-  // offscreen for full-res composition
-  const off = document.createElement('canvas'); off.width = EXPORT_SIZE; off.height = EXPORT_SIZE; const offCtx = off.getContext('2d', {alpha:true});
-
-  // visible canvas
-  const view = document.getElementById('view'); const ctx = view.getContext('2d', {alpha:true});
-
-  // util
-  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
-  function showToast(msg){ const t=document.getElementById('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
-
-  // Managers
-  const LayersManager = (function(){
-    let layers = []; // top is last
-    let selectedId = null;
-    return {
-      all: ()=>layers,
-      addImage(img){ const id=uid(); const scale = Math.min(1, (EXPORT_SIZE*0.25)/Math.max(img.width,img.height)); const layer = {id,type:'image',img,x:EXPORT_SIZE/2,y:EXPORT_SIZE/2,scale,rot:0,opacity:1,filters:{brightness:1,contrast:1,saturate:1,blur:0}}; layers.push(layer); return layer; },
-      addText(text,font,size,color){ const id=uid(); const layer = {id,type:'text',text,font,size,x:EXPORT_SIZE/2,y:EXPORT_SIZE/2,scale:1,rot:0,opacity:1, color, filters:{brightness:1,contrast:1,saturate:1,blur:0}}; layers.push(layer); return layer; },
-      remove(id){ layers = layers.filter(l=>l.id!==id); if(selectedId===id) selectedId=null; UI.rebuildLayersList(); Renderer.draw(); },
-      select(id){ selectedId=id; UI.updateLayerControls(); Renderer.draw(); },
-      selected(){ return layers.find(l=>l.id===selectedId); },
-      indexOf(id){ return layers.findIndex(l=>l.id===id); },
-      bringFront(id){ const i=this.indexOf(id); if(i>-1){ const [it]=layers.splice(i,1); layers.push(it); } UI.rebuildLayersList(); Renderer.draw(); },
-      sendBack(id){ const i=this.indexOf(id); if(i>-1){ const [it]=layers.splice(i,1); layers.unshift(it); } UI.rebuildLayersList(); Renderer.draw(); },
-      clear(){ layers=[]; selectedId=null; UI.rebuildLayersList(); Renderer.draw(); },
-      addSerialized(s){ if(s.type==='image'){ const img = new Image(); img.src = s.imgData; return new Promise(res=>{ img.onload=()=>{ layers.push({...s,img}); res(); } }); } else { layers.push(s); return Promise.resolve(); } },
-      serialize(){ return layers.map(l=>{ if(l.type==='image'){ const c=document.createElement('canvas'); c.width=l.img.width; c.height=l.img.height; c.getContext('2d').drawImage(l.img,0,0); return {...l, imgData: c.toDataURL()}; } else return l; }); },
-      updateSelected(updater){ const s = this.selected(); if(!s) return; Object.assign(s, updater); UI.updateLayerControls(); Renderer.draw(); },
-      deselect(){ selectedId=null; UI.updateLayerControls(); Renderer.draw(); },
-    }
-  })();
-
-  const Renderer = (function(){
-    let templateImg = null;
-    function setTemplate(img){ templateImg = img; Renderer.draw(); }
-
-    function composeToOff(includeTemplate=true){ // full resolution
-      offCtx.clearRect(0,0,EXPORT_SIZE,EXPORT_SIZE);
-      if(includeTemplate && templateImg) offCtx.drawImage(templateImg,0,0,EXPORT_SIZE,EXPORT_SIZE);
-      // draw layers in order
-      for(const l of LayersManager.all()){
-        offCtx.save();
-        // filters per layer
-        const f = l.filters || {brightness:1,contrast:1,saturate:1,blur:0};
-        // build filter string
-        const filterParts = [];
-        if(f.blur) filterParts.push(`blur(${f.blur}px)`);
-        filterParts.push(`brightness(${f.brightness})`);
-        filterParts.push(`contrast(${f.contrast})`);
-        filterParts.push(`saturate(${f.saturate})`);
-        offCtx.filter = filterParts.join(' ');
-        offCtx.globalAlpha = l.opacity ?? 1;
-        offCtx.translate(l.x, l.y);
-        offCtx.rotate(l.rot || 0);
-        if(l.type==='image'){
-          const w = l.img.width * (l.scale||1);
-          const h = l.img.height * (l.scale||1);
-          offCtx.drawImage(l.img, -w/2, -h/2, w, h);
-        } else {
-          // text
-          offCtx.scale(l.scale||1, l.scale||1);
-          offCtx.font = `${(l.size||72)}px ${l.font || 'Inter'}`;
-          offCtx.fillStyle = l.color || '#fff';
-          offCtx.textAlign = 'center'; offCtx.textBaseline='middle';
-          offCtx.fillText(l.text, 0, 0);
+    class Renderer {
+      constructor(canvas){
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
+        this.layers = [];
+      }
+      render(){
+        this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+        for(let layer of this.layers){
+          if(layer.type === "image"){
+            this.ctx.globalAlpha = layer.opacity;
+            this.ctx.drawImage(layer.img, layer.x, layer.y, layer.w, layer.h);
+            this.ctx.globalAlpha = 1;
+          }
         }
-        offCtx.restore();
-        offCtx.filter = 'none';
       }
     }
 
-    function drawPreview(){ // scale down to view canvas
-      composeToOff(true);
-      // fit view canvas to container while keeping square aspect
-      const wrap = document.getElementById('viewWrap');
-      const rect = wrap.getBoundingClientRect();
-      const size = Math.min(rect.width - 24, rect.height - 24);
-      view.width = size; view.height = size;
-      // clear
-      ctx.clearRect(0,0,view.width,view.height);
-      ctx.imageSmoothingEnabled = true;
-      ctx.drawImage(off, 0, 0, view.width, view.height);
-      // draw selection rect
-      const sel = LayersManager.selected();
-      if(sel){
-        const scale = view.width / EXPORT_SIZE;
-        ctx.save(); ctx.strokeStyle='rgba(240,180,41,0.95)'; ctx.lineWidth=2; ctx.setLineDash([8,6]);
-        ctx.translate(sel.x*scale, sel.y*scale); ctx.rotate(sel.rot||0);
-        if(sel.type==='image'){
-          const w = (sel.img.width * (sel.scale||1)) * scale;
-          const h = (sel.img.height * (sel.scale||1)) * scale;
-          ctx.strokeRect(-w/2, -h/2, w, h);
-        } else {
-          const estW = (sel.text.length * (sel.size||72) * 0.5) * (sel.scale||1) * scale;
-          const estH = (sel.size||72) * (sel.scale||1) * scale;
-          ctx.strokeRect(-estW/2, -estH/2, estW, estH);
+    class LayersManager {
+      constructor(renderer){
+        this.renderer = renderer;
+        this.layers = renderer.layers;
+        this.selected = null;
+      }
+      addLayer(img){
+        const layer = {type:"image", img, x:50, y:50, w:img.width/2, h:img.height/2, opacity:1};
+        this.layers.push(layer);
+        this.selected = layer;
+      }
+      removeSelected(){
+        if(!this.selected) return;
+        const idx = this.layers.indexOf(this.selected);
+        if(idx>=0){
+          this.layers.splice(idx,1);
+          this.selected = null;
+          this.renderer.render();
         }
-        ctx.restore();
-        // show handles (visual only)
-        showHandles(sel);
-      } else hideHandles();
+      }
     }
 
-    function showHandles(sel){ const wrap = document.getElementById('viewWrap'); const scale = view.width / EXPORT_SIZE; const hTL = document.getElementById('h-tl'); const hTR=document.getElementById('h-tr'); const hBL=document.getElementById('h-bl'); const hBR=document.getElementById('h-br');
-      const w = sel.type==='image' ? (sel.img.width*(sel.scale||1))*scale : (sel.text.length*(sel.size||72)*0.5)*(sel.scale||1)*scale;
-      const h = sel.type==='image' ? (sel.img.height*(sel.scale||1))*scale : (sel.size||72)*(sel.scale||1)*scale;
-      // compute corners in view space
-      const cx = sel.x*scale; const cy = sel.y*scale; const angle = sel.rot||0; const hw=w/2; const hh=h/2;
-      const corners = [ [-hw,-hh], [hw,-hh], [-hw,hh], [hw,hh] ].map(([dx,dy])=>{
-        const x = cx + (dx*Math.cos(angle) - dy*Math.sin(angle));
-        const y = cy + (dx*Math.sin(angle) + dy*Math.cos(angle)); return {x,y};
+    class ProjectManager {
+      constructor(layersManager, renderer){
+        this.layersManager = layersManager;
+        this.renderer = renderer;
+      }
+      save(){
+        const data = JSON.stringify(this.renderer.layers);
+        localStorage.setItem("skin-project", data);
+        alert("Projeto salvo!");
+      }
+      load(){
+        const data = localStorage.getItem("skin-project");
+        if(!data) return alert("Nenhum projeto salvo.");
+        const parsed = JSON.parse(data);
+        this.renderer.layers.length = 0;
+        parsed.forEach(l => {
+          const img = new Image();
+          img.onload = ()=>{
+            this.renderer.layers.push({...l, img});
+            this.renderer.render();
+          };
+          img.src = l.img.src || l.img;
+        });
+      }
+      reset(){
+        this.renderer.layers.length = 0;
+        this.renderer.render();
+      }
+    }
+
+    class ExportManager {
+      constructor(renderer,layersManager){
+        this.renderer = renderer;
+        this.layersManager = layersManager;
+      }
+      export(includeTemplate){
+        const link = document.createElement("a");
+        link.download = includeTemplate?"skin_with_template.png":"skin.png";
+        link.href = this.renderer.canvas.toDataURL("image/png");
+        link.click();
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const editorCanvas = document.getElementById("editor-canvas");
+      const renderer = new Renderer(editorCanvas);
+      const layersManager = new LayersManager(renderer);
+      const projectManager = new ProjectManager(layersManager, renderer);
+      const exportManager = new ExportManager(renderer, layersManager);
+
+      document.getElementById("add-image").addEventListener("click", () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = e => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            const img = new Image();
+            img.onload = () => {
+              layersManager.addLayer(img);
+              renderer.render();
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
       });
-      // position handles
-      hTL.style.left = `${corners[0].x - 6}px`; hTL.style.top = `${corners[0].y - 6}px`; hTL.style.display='block';
-      hTR.style.left = `${corners[1].x - 6}px`; hTR.style.top = `${corners[1].y - 6}px`; hTR.style.display='block';
-      hBL.style.left = `${corners[2].x - 6}px`; hBL.style.top = `${corners[2].y - 6}px`; hBL.style.display='block';
-      hBR.style.left = `${corners[3].x - 6}px`; hBR.style.top = `${corners[3].y - 6}px`; hBR.style.display='block';
-    }
-    function hideHandles(){ ['h-tl','h-tr','h-bl','h-br'].forEach(id=>document.getElementById(id).style.display='none'); }
 
-    return { setTemplate, composeToOff, draw: drawPreview, getTemplate: ()=>templateImg };
-  })();
+      document.getElementById("save-project").addEventListener("click", () => projectManager.save());
+      document.getElementById("load-project").addEventListener("click", () => projectManager.load());
+      document.getElementById("reset-project").addEventListener("click", () => projectManager.reset());
+      document.getElementById("export-with-template").addEventListener("click", () => exportManager.export(true));
+      document.getElementById("export-no-template").addEventListener("click", () => exportManager.export(false));
 
-  const ExportManager = (function(){
-    function exportPNG(includeTemplate=true){ showToast('Gerando PNG 4096x4096...'); Renderer.composeToOff(includeTemplate); off.toBlob((blob)=>{
-        const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download = includeTemplate? 'skin_with_template_4096.png' : 'skin_clean_4096.png'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); showToast('Download iniciado.');
-      }, 'image/png'); }
-    return { exportPNG };
-  })();
-
-  const ProjectManager = (function(){
-    function save(){ const payload = { layers: LayersManager.serialize(), templateData: (Renderer.getTemplate()? (()=>{ const c=document.createElement('canvas'); c.width=Renderer.getTemplate().width; c.height=Renderer.getTemplate().height; c.getContext('2d').drawImage(Renderer.getTemplate(),0,0); return c.toDataURL(); })() : null) }; localStorage.setItem('superSenaSkin_v2', JSON.stringify(payload)); showToast('Projeto salvo localmente.'); }
-    function load(){ const raw = localStorage.getItem('superSenaSkin_v2'); if(!raw) return alert('Nenhum projeto salvo.'); const data = JSON.parse(raw); LayersManager.clear(); const promises = []; if(data.templateData){ const t = new Image(); const p = new Promise(res=>{ t.onload=res; t.src=data.templateData; }); p.then(()=>Renderer.setTemplate(t)); promises.push(p); }
-      data.layers.forEach(s=>{ promises.push(LayersManager.addSerialized(s)); }); Promise.all(promises).then(()=>{ UI.rebuildLayersList(); Renderer.draw(); showToast('Projeto carregado.'); }); }
-    function reset(){ if(!confirm('Resetar: remover todas camadas e template?')) return; LayersManager.clear(); Renderer.setTemplate(null); showToast('Projeto resetado.'); }
-    return { save, load, reset };
-  })();
-
-  // UI wiring
-  const UI = (function(){
-    // elements
-    const templateFile = document.getElementById('templateFile'); const imageFile = document.getElementById('imageFile'); const addTextBtn = document.getElementById('addTextBtn'); const textInput = document.getElementById('textInput'); const fontSelect = document.getElementById('fontSelect'); const textSize = document.getElementById('textSize'); const textColor = document.getElementById('textColor');
-    const layersList = document.getElementById('layersList'); const layerControls = document.getElementById('layerControls'); const layerScale = document.getElementById('layerScale'); const layerRot = document.getElementById('layerRot'); const layerOpacity = document.getElementById('layerOpacity'); const delLayer = document.getElementById('delLayer'); const centerLayer = document.getElementById('centerLayer');
-    const exportClean = document.getElementById('exportClean'); const exportWith = document.getElementById('exportWith'); const saveProj = document.getElementById('saveProj'); const loadProj = document.getElementById('loadProj'); const resetProj = document.getElementById('resetProj');
-
-    // filters
-    const filterBrightness = document.getElementById('filterBrightness'); const filterContrast = document.getElementById('filterContrast'); const filterSaturate = document.getElementById('filterSaturate'); const filterBlur = document.getElementById('filterBlur');
-
-    templateFile.addEventListener('change', e=>{ const f=e.target.files[0]; if(!f) return; const t=new Image(); t.onload=()=>{ Renderer.setTemplate(t); document.getElementById('metaInfo').innerText='Template carregado'; Renderer.draw(); }; t.src = URL.createObjectURL(f); });
-
-    imageFile.addEventListener('change', e=>{ const f=e.target.files[0]; if(!f) return; const i=new Image(); i.onload=()=>{ LayersManager.addImage(i); rebuildLayersList(); Renderer.draw(); }; i.src = URL.createObjectURL(f); });
-
-    addTextBtn.addEventListener('click', ()=>{ const txt = textInput.value.trim(); if(!txt) return alert('Digite um texto'); LayersManager.addText(txt, fontSelect.value, parseInt(textSize.value,10)||72, textColor.value); textInput.value=''; rebuildLayersList(); Renderer.draw(); });
-
-    function rebuildLayersList(){ layersList.innerHTML=''; const arr = LayersManager.all(); arr.forEach((l,idx)=>{ const li=document.createElement('li'); const title = l.type==='image' ? `Image ${idx+1}` : (l.text || 'Text'); li.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div style="width:36px;height:24px;border-radius:4px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:12px">${l.type==='image'?'IMG':'T'}</div><div style="min-width:120px">${title}</div></div><div style="display:flex;gap:6px"><button data-id="${l.id}" class="btn ghost small selBtn">Sel</button></div>`; layersList.appendChild(li); li.querySelector('.selBtn').addEventListener('click', ()=>{ LayersManager.select(l.id); }); }); }
-
-    function updateLayerControls(){ const s = LayersManager.selected(); if(!s){ layerControls.style.display='none'; return; } layerControls.style.display='block'; layerScale.value = s.scale || 1; layerRot.value = ((s.rot||0)*180/Math.PI).toFixed(0); layerOpacity.value = s.opacity ?? 1; // filters
-      filterBrightness.value = s.filters?.brightness ?? 1; filterContrast.value = s.filters?.contrast ?? 1; filterSaturate.value = s.filters?.saturate ?? 1; filterBlur.value = s.filters?.blur ?? 0; }
-
-    layerScale.addEventListener('input', e=>{ const v=parseFloat(e.target.value); LayersManager.updateSelected({scale:v}); });
-    layerRot.addEventListener('input', e=>{ const v=parseFloat(e.target.value)*Math.PI/180; LayersManager.updateSelected({rot:v}); });
-    layerOpacity.addEventListener('input', e=>{ const v=parseFloat(e.target.value); LayersManager.updateSelected({opacity:v}); });
-    delLayer.addEventListener('click', ()=>{ const s = LayersManager.selected(); if(!s) return; LayersManager.remove(s.id); rebuildLayersList(); });
-    centerLayer.addEventListener('click', ()=>{ const s = LayersManager.selected(); if(!s) return; LayersManager.updateSelected({x:EXPORT_SIZE/2,y:EXPORT_SIZE/2}); });
-
-    // filters
-    [filterBrightness, filterContrast, filterSaturate, filterBlur].forEach(el=>el.addEventListener('input', ()=>{ const s = LayersManager.selected(); if(!s) return; s.filters = s.filters || {}; s.filters.brightness = parseFloat(filterBrightness.value); s.filters.contrast = parseFloat(filterContrast.value); s.filters.saturate = parseFloat(filterSaturate.value); s.filters.blur = parseFloat(filterBlur.value); Renderer.draw(); }));
-
-    // export/save/load/reset
-    exportClean.addEventListener('click', ()=>ExportManager.exportPNG(false)); exportWith.addEventListener('click', ()=>ExportManager.exportPNG(true)); saveProj.addEventListener('click', ()=>ProjectManager.save()); loadProj.addEventListener('click', ()=>ProjectManager.load()); resetProj.addEventListener('click', ()=>ProjectManager.reset());
-
-    return { rebuildLayersList: rebuildLayersList, updateLayerControls: updateLayerControls };
-  })();
-
-  // interactions: dragging
-  (function interactions(){
-    let dragging=false; let dragOffset={x:0,y:0};
-    function viewToExport(clientX,clientY){ const rect = view.getBoundingClientRect(); const vx = clientX - rect.left; const vy = clientY - rect.top; const scale = EXPORT_SIZE / view.width; return {x: vx * scale, y: vy * scale}; }
-
-    view.addEventListener('mousedown', ev=>{
-      const p = viewToExport(ev.clientX, ev.clientY);
-      // topmost hit test
-      const arr = LayersManager.all(); for(let i=arr.length-1;i>=0;i--){ const l = arr[i]; const dx = p.x - l.x; const dy = p.y - l.y; const s = Math.sin(-l.rot || 0); const c = Math.cos(-l.rot || 0); const lx = dx*c - dy*s; const ly = dx*s + dy*c; if(l.type==='image'){ const w=l.img.width*(l.scale||1); const h=l.img.height*(l.scale||1); if(Math.abs(lx)<=w/2 && Math.abs(ly)<=h/2){ LayersManager.select(l.id); dragging=true; dragOffset.x = lx; dragOffset.y = ly; return; } } else { const boxW = (l.text.length * (l.size||72) * 0.5) * (l.scale||1); const boxH = (l.size||72) * (l.scale||1); if(Math.abs(lx)<=boxW/2 && Math.abs(ly)<=boxH/2){ LayersManager.select(l.id); dragging=true; dragOffset.x = lx; dragOffset.y = ly; return; } }
-      }
-      // clicked empty
-      LayersManager.deselect();
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Delete") layersManager.removeSelected();
+        if (e.ctrlKey && e.key === "s") {
+          e.preventDefault();
+          projectManager.save();
+        }
+      });
     });
-
-    window.addEventListener('mousemove', ev=>{
-      if(!dragging) return; const sel = LayersManager.selected(); if(!sel) return; const p = viewToExport(ev.clientX, ev.clientY); const s = Math.sin(sel.rot || 0); const c = Math.cos(sel.rot || 0); const worldOffsetX = dragOffset.x * c + dragOffset.y * -s; const worldOffsetY = dragOffset.x * s + dragOffset.y * c; sel.x = p.x - worldOffsetX; sel.y = p.y - worldOffsetY; UI.updateLayerControls(); Renderer.draw(); });
-    window.addEventListener('mouseup', ()=>{ dragging=false; });
-
-    // keyboard
-    window.addEventListener('keydown', e=>{
-      if(e.key==='e') ExportManager.exportPNG(false);
-      if(e.key==='c'){ const s=LayersManager.selected(); if(s){ s.x=EXPORT_SIZE/2; s.y=EXPORT_SIZE/2; Renderer.draw(); } }
-      if(e.key==='Delete'){ const s=LayersManager.selected(); if(s){ LayersManager.remove(s.id); UI.rebuildLayersList(); } }
-      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); ProjectManager.save(); }
-    });
-
-  })();
-
-  // init placeholder
-  (function init(){ const ctxOff = offCtx; ctxOff.fillStyle='#071416'; ctxOff.fillRect(0,0,EXPORT_SIZE,EXPORT_SIZE); ctxOff.fillStyle='#072a2a'; ctxOff.fillRect(0,0,EXPORT_SIZE,120); ctxOff.fillStyle='#fff'; ctxOff.font='bold 120px Inter'; ctxOff.fillText('Super Sena Skin Studio', 160, 220); Renderer.draw(); })();
-
-  // expose UI functions
-  const UI = window.UI;
-
   </script>
 </body>
 </html>
