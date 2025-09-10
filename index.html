@@ -1,154 +1,117 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Super Sena — Skin Studio (4096x4096) + Support</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Super Sena — Skin Studio Pro (Mini Photoshop)</title>
+<meta name="description" content="Editor online de skins 4096x4096 para ETS2 — export, camadas, texto, zoom, pan, recorte, filtros." />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#071018; --card:#071a22; --accent:#f0b429; --muted:#98b4bb; --glass:rgba(255,255,255,0.03);
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
 }
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#041018 0%, #071427 60%);color:#e6f6f9}
-.wrap{max-width:1200px;margin:18px auto;padding:18px}
+body{margin:0;background:linear-gradient(180deg,#041018 0%,#071427 60%);color:#e6f6f9}
+.wrap{max-width:1600px;margin:0 auto;padding:12px;display:flex;flex-direction:column;gap:12px}
 header{display:flex;gap:12px;align-items:center}
 .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018;font-size:22px}
 h1{font-size:22px;margin:0}
-p.lead{color:var(--muted);margin:4px 0 0}
-.main{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:16px}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-.editor{border-radius:12px;overflow:hidden;position:relative;background:#fff}
-#viewWrap{width:100%;height:680px;display:flex;align-items:center;justify-content:center;background:#fff}
-canvas#view{border-radius:6px;max-width:100%;max-height:100%}
-.controls{display:flex;flex-direction:column;gap:10px}
+p.lead{color:var(--muted);margin:0}
+.main{display:flex;gap:12px;flex:1;min-height:80vh}
+.editor-wrap{flex:3;display:flex;flex-direction:column;background:#fff;border-radius:12px;overflow:hidden;position:relative}
+#viewWrap{flex:1;display:flex;align-items:center;justify-content:center;background:#fff;cursor:grab;overflow:hidden;position:relative}
+canvas#view{background:#fff;display:block;max-width:100%;max-height:100%;border-radius:0}
+.rightPanel{flex:1;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px}
+.controls label{font-size:13px;color:var(--muted)}
+input,select,textarea,button{font-family:inherit}
 input[type="range"]{width:100%}
-label{font-size:13px;color:var(--muted)}
-.btn{background:var(--accent);color:#071018;padding:10px 12px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-.small{font-size:13px;color:var(--muted)}
-.row{display:flex;gap:8px;align-items:center}
-.rightPanel{display:flex;flex-direction:column;gap:10px}
-ul.layers{list-style:none;padding:0;margin:0;max-height:220px;overflow:auto}
-ul.layers li{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+button.btn{background:var(--accent);color:#071018;padding:8px 10px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+button.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+ul.layers{list-style:none;padding:0;margin:0;overflow:auto;max-height:300px}
+ul.layers li{padding:6px;border-radius:6px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:rgba(0,0,0,0.75);padding:10px 14px;border-radius:8px;color:#fff;display:none;z-index:9999}
-footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-@media (max-width:980px){.main{grid-template-columns:1fr}.editor{height:520px}}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:12px;gap:8px}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <div class="logo">SS</div>
-  <div>
-    <h1>Super Sena — Skin Studio Pro (Protótipo)</h1>
-    <p class="lead">Editor 4096×4096 — exporte sem template, camadas, texto, salvar e pedir design via IA.</p>
-  </div>
+<div class="logo">SS</div>
+<div>
+<h1>Super Sena — Skin Studio Pro</h1>
+<p class="lead">Editor 4096×4096 — Mini Photoshop Canvas</p>
+</div>
 </header>
 
-<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-  <a class="btn" href="#studio">Ir para o Studio</a>
-  <a class="btn ghost" href="https://livepix.gg/eullersena" target="_blank">Apoie no Livepix</a>
-  <a class="btn ghost" href="https://discord.gg/8SzFU4BnnB" target="_blank">Discord</a>
-  <a class="btn ghost" href="https://instagram.com/supersena7" target="_blank">Instagram</a>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<a class="btn" href="#studio">Ir para o Studio</a>
+<a class="btn ghost" href="https://instagram.com/supersena7" target="_blank">Instagram</a>
+<a class="btn ghost" href="https://discord.gg/8SzFU4BnnB" target="_blank">Discord</a>
 </div>
 
-<section id="studio" class="main" style="margin-top:12px">
+<section id="studio" class="main">
+<div class="editor-wrap">
+<div class="controls card">
+<label>Upload template (PNG/JPG)</label>
+<input type="file" id="templateFile" accept="image/*">
+<label>Upload imagem/logo</label>
+<input type="file" id="imageFile" accept="image/*">
+<label>Adicionar texto</label>
+<div style="display:flex;gap:6px">
+<input type="text" id="textInput" placeholder="Texto da skin" style="flex:1">
+<button class="btn ghost" id="addTextBtn">Adicionar</button>
+</div>
+<label>Fonte</label>
+<select id="fontSelect">
+<option value="Inter">Inter</option>
+<option value="Arial">Arial</option>
+<option value="Georgia">Georgia</option>
+<option value="Impact">Impact</option>
+</select>
+<label>Tamanho do texto</label>
+<input type="range" id="textSize" min="12" max="400" value="72">
+<label>Cor do texto</label>
+<input type="color" id="textColor" value="#000000">
+<div style="display:flex;gap:6px;margin-top:6px">
+<button class="btn" id="exportClean">Exportar Sem Template</button>
+<button class="btn ghost" id="exportWith">Exportar Com Template</button>
+</div>
+<div style="display:flex;gap:6px;margin-top:6px">
+<button class="btn" id="saveProj">Salvar Projeto</button>
+<button class="btn ghost" id="loadProj">Carregar Projeto</button>
+<button class="btn ghost" id="resetProj">Resetar</button>
+</div>
+</div>
+
+<div id="viewWrap">
+<canvas id="view" width="800" height="800"></canvas>
+</div>
+</div>
+
+<aside class="rightPanel">
 <div class="card">
-<h2>Skin Studio — Editor 4096×4096</h2>
-<div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-  <div style="flex:1;min-width:240px" class="controls">
-    <label>Upload template (guia) — formato PNG/JPG (recomendado 4096×4096)</label>
-    <input id="templateFile" type="file" accept="image/*" />
-    <label>Upload imagem/logo (sticker)</label>
-    <input id="imageFile" type="file" accept="image/*" />
-    <div class="row">
-      <label>Adicionar texto</label>
-      <input id="textInput" placeholder="Texto da skin" style="flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"/>
-      <button id="addTextBtn" class="btn ghost">Adicionar</button>
-    </div>
-
-    <div style="margin-top:6px">
-      <label>Fonte</label>
-      <select id="fontSelect" style="width:100%;padding:6px;border-radius:6px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit">
-        <option value="Inter">Inter</option>
-        <option value="Arial">Arial</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Impact">Impact</option>
-      </select>
-    </div>
-
-    <div>
-      <label>Texto - Tamanho</label>
-      <input id="textSize" type="range" min="12" max="400" value="72">
-    </div>
-    <div>
-      <label>Cor do texto</label>
-      <input id="textColor" type="color" value="#000000">
-    </div>
-
-    <div style="margin-top:10px">
-      <label>Opções de export</label>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button id="exportClean" class="btn">Exportar Skin (Sem Template)</button>
-        <button id="exportWith" class="btn ghost">Exportar Skin (Com Template)</button>
-      </div>
-      <div style="margin-top:8px;display:flex;gap:8px">
-        <button id="saveProj" class="btn">Salvar Projeto</button>
-        <button id="loadProj" class="btn ghost">Carregar Projeto</button>
-        <button id="resetProj" class="btn ghost">Resetar</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="editor" style="flex:2;min-width:420px">
-    <div id="viewWrap">
-      <canvas id="view"></canvas>
-    </div>
-  </div>
+<strong>Camadas</strong>
+<ul class="layers" id="layersList"></ul>
+<div style="display:flex;gap:6px;margin-top:6px">
+<button class="btn ghost" id="bringFront">Trazer Frente</button>
+<button class="btn ghost" id="sendBack">Mandar Fundo</button>
 </div>
-<div style="margin-top:10px" class="small">Dica: Edite com o template visível, depois exporte sem template para gerar apenas a sua artwork (fundo transparente). Exporte com template para conferir o alinhamento.</div>
 </div>
 
-<aside class="card rightPanel">
-<div>
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <div><strong>Status</strong></div>
-    <div id="metaInfo" class="small">Pronto</div>
-  </div>
+<div class="card" id="layerControls" style="display:none">
+<strong>Controle da camada</strong>
+<label>Escala</label>
+<input type="range" id="layerScale" min="0.05" max="3" step="0.01" value="1">
+<label>Rotação (°)</label>
+<input type="range" id="layerRot" min="-180" max="180" step="1" value="0">
+<label>Opacidade</label>
+<input type="range" id="layerOpacity" min="0" max="1" step="0.01" value="1">
+<div style="display:flex;gap:6px;margin-top:6px">
+<button class="btn ghost" id="delLayer">Remover</button>
+<button class="btn ghost" id="centerLayer">Centralizar</button>
 </div>
-
-<div style="margin-top:8px">
-  <div class="small">Camadas (arraste no canvas para posicionar)</div>
-  <ul class="layers" id="layersList"></ul>
-  <div style="display:flex;gap:8px;margin-top:8px">
-    <button id="bringFront" class="btn ghost">Trazer Frente</button>
-    <button id="sendBack" class="btn ghost">Mandar Fundo</button>
-  </div>
-</div>
-
-<div style="margin-top:8px">
-  <div class="small">Controles rápidos</div>
-  <div class="small" style="margin-top:6px;color:var(--muted)">
-    - Clique e arraste para mover imagem/texto.<br/>
-    - Use sliders de rotação e escala abaixo (aparecem ao selecionar uma camada).<br/>
-    - Teclas: E = exportar (limpo), C = centralizar layer selecionada.
-  </div>
-</div>
-
-<div id="layerControls" style="display:none;margin-top:8px">
-  <div class="small">Controle da camada selecionada</div>
-  <label>Escala</label>
-  <input id="layerScale" type="range" min="0.05" max="3" step="0.01" value="1">
-  <label>Rotação (°)</label>
-  <input id="layerRot" type="range" min="-180" max="180" step="1" value="0">
-  <label>Opacidade</label>
-  <input id="layerOpacity" type="range" min="0" max="1" step="0.01" value="1">
-  <div style="display:flex;gap:8px;margin-top:6px">
-    <button id="delLayer" class="btn ghost">Remover</button>
-    <button id="centerLayer" class="btn ghost">Centralizar</button>
-  </div>
 </div>
 </aside>
 </section>
@@ -156,217 +119,193 @@ footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-co
 <footer>
 <div>© Super Sena — Skin Studio Prototype</div>
 <div>
-  <a href="https://instagram.com/supersena7" style="color:var(--muted);margin-right:10px">Instagram</a>
-  <a href="https://discord.gg/8SzFU4BnnB" style="color:var(--muted)">Discord</a>
+<a href="https://instagram.com/supersena7" style="color:var(--muted)">Instagram</a>
+<a href="https://discord.gg/8SzFU4BnnB" style="color:var(--muted)">Discord</a>
 </div>
 </footer>
 </div>
 
-<div class="toast" id="toast">Exportando...</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const view=document.getElementById('view');
-const ctx=view.getContext('2d',{alpha:true});
+const ctx=view.getContext('2d');
 const exportSize=4096;
 const off=document.createElement('canvas');
 off.width=exportSize; off.height=exportSize;
-const offCtx=off.getContext('2d',{alpha:true});
-
+const offCtx=off.getContext('2d');
 let templateImg=null;
-let layers=[];
+let layers=[]; // {id,type,img/text,x,y,scale,rot,opacity,font,color,size}
 let selectedId=null;
-let dragging=false;
-let dragOffset={x:0,y:0};
-let zoom=1, panX=0, panY=0;
-
-function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2200);}
-
+let dragging=false; let dragOffset={x:0,y:0};
+let zoom=1; let offset={x:0,y:0};
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',1800);}
 
-function fitCanvas(){
-  const wrap=document.getElementById('viewWrap');
-  const rect=wrap.getBoundingClientRect();
-  view.width=rect.width; view.height=rect.height;
-  draw();
-}
-
-window.addEventListener('resize',fitCanvas);
-
+// Load template
 document.getElementById('templateFile').addEventListener('change',e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const url=URL.createObjectURL(f); const i=new Image();
-  i.onload=()=>{templateImg=i; draw();}
-  i.src=url;
+const f=e.target.files[0]; if(!f)return;
+const url=URL.createObjectURL(f); const i=new Image();
+i.onload=()=>{ templateImg=i; draw(); showToast('Template carregado'); }
+i.src=url;
 });
 
+// Load image/logo
 document.getElementById('imageFile').addEventListener('change',e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const url=URL.createObjectURL(f); const i=new Image();
-  i.onload=()=>{
-    const id=uid();
-    const scale=Math.min(1,(exportSize*0.25)/Math.max(i.width,i.height));
-    layers.push({id,type:'image',img:i,x:exportSize/2,y:exportSize/2,scale,rot:0,opacity:1});
-    rebuildLayersList(); draw();
-  }
-  i.src=url;
+const f=e.target.files[0]; if(!f)return;
+const url=URL.createObjectURL(f); const i=new Image();
+i.onload=()=>{
+const id=uid();
+const scale=Math.min(1,(exportSize*0.25)/Math.max(i.width,i.height));
+layers.push({id,type:'image',img:i,x:exportSize/2,y:exportSize/2,scale,rot:0,opacity:1});
+rebuildLayersList(); draw();
+}
+i.src=url;
 });
 
+// Add text
 document.getElementById('addTextBtn').addEventListener('click',()=>{
-  const txt=document.getElementById('textInput').value.trim();
-  if(!txt) return alert('Digite um texto');
-  const id=uid();
-  const size=parseInt(document.getElementById('textSize').value,10)||72;
-  const font=document.getElementById('fontSelect').value;
-  const color=document.getElementById('textColor').value;
-  layers.push({id,type:'text',text:txt,x:exportSize/2,y:exportSize/2,scale:1,rot:0,opacity:1,font,size,color});
-  rebuildLayersList(); draw();
-  document.getElementById('textInput').value='';
+const txt=document.getElementById('textInput').value.trim(); if(!txt)return alert('Digite um texto');
+const id=uid();
+const size=parseInt(document.getElementById('textSize').value,10)||72;
+const font=document.getElementById('fontSelect').value;
+const color=document.getElementById('textColor').value;
+layers.push({id,type:'text',text:txt,x:exportSize/2,y:exportSize/2,scale:1,rot:0,opacity:1,font,size,color});
+rebuildLayersList(); draw();
+document.getElementById('textInput').value='';
 });
 
+// Compose to offscreen
 function composeToOff(includeTemplate=true){
-  offCtx.clearRect(0,0,exportSize,exportSize);
-  offCtx.fillStyle="#fff"; offCtx.fillRect(0,0,exportSize,exportSize);
-
-  if(includeTemplate && templateImg){
-    const ratio=Math.min(exportSize/templateImg.width,exportSize/templateImg.height);
-    const w=templateImg.width*ratio; const h=templateImg.height*ratio;
-    const x=(exportSize-w)/2; const y=(exportSize-h)/2;
-    offCtx.drawImage(templateImg,x,y,w,h);
-  }
-
-  for(const l of layers){
-    offCtx.save();
-    offCtx.globalAlpha=l.opacity||1;
-    offCtx.translate(l.x,l.y);
-    offCtx.rotate(l.rot||0);
-    if(l.type==='image'){
-      const w=l.img.width*(l.scale||1);
-      const h=l.img.height*(l.scale||1);
-      offCtx.drawImage(l.img,-w/2,-h/2,w,h);
-    } else if(l.type==='text'){
-      offCtx.font=`${l.size||72}px ${l.font||'Inter'}`;
-      offCtx.fillStyle=l.color||'#000';
-      offCtx.textAlign='center';
-      offCtx.textBaseline='middle';
-      offCtx.scale(l.scale||1,l.scale||1);
-      offCtx.fillText(l.text,0,0);
-    }
-    offCtx.restore();
-  }
+offCtx.clearRect(0,0,exportSize,exportSize);
+if(includeTemplate && templateImg){
+offCtx.drawImage(templateImg,0,0,exportSize,exportSize);}
+for(const l of layers){
+offCtx.save();
+offCtx.globalAlpha=l.opacity||1;
+offCtx.translate(l.x,l.y);
+offCtx.rotate(l.rot||0);
+if(l.type==='image'){
+const w=l.img.width*(l.scale||1);
+const h=l.img.height*(l.scale||1);
+offCtx.drawImage(l.img,-w/2,-h/2,w,h);
+}else if(l.type==='text'){
+offCtx.font=`${l.size||72}px ${l.font||'Inter'}`;
+offCtx.fillStyle=l.color||'#000';
+offCtx.textAlign='center';
+offCtx.textBaseline='middle';
+offCtx.scale(l.scale||1,l.scale||1);
+offCtx.fillText(l.text,0,0);
+}
+offCtx.restore();
+}
 }
 
+// Draw scaled preview
 function draw(){
-  ctx.clearRect(0,0,view.width,view.height);
-  ctx.save();
-  composeToOff(true);
-  const ratio=Math.min(view.width/exportSize,view.height/exportSize);
-  const w=exportSize*ratio; const h=exportSize*ratio;
-  const x=(view.width-w)/2; const y=(view.height-h)/2;
-  ctx.drawImage(off,x,y,w,h);
+ctx.setTransform(1,0,0,1,0,0);
+ctx.clearRect(0,0,view.width,view.height);
+ctx.translate(offset.x,offset.y);
+ctx.scale(zoom,zoom);
+composeToOff(true);
+ctx.drawImage(off,0,0,exportSize,exportSize);
 
-  if(selectedId){
-    const s=layers.find(l=>l.id===selectedId);
-    if(s){
-      ctx.strokeStyle='rgba(240,180,41,0.9)';
-      ctx.lineWidth=2; ctx.setLineDash([8,6]);
-      ctx.save();
-      ctx.translate(x+(s.x/exportSize)*w,y+(s.y/exportSize)*h);
-      ctx.rotate(s.rot||0);
-      if(s.type==='image'){
-        const w2=s.img.width*(s.scale||1)*(w/exportSize);
-        const h2=s.img.height*(s.scale||1)*(h/exportSize);
-        ctx.strokeRect(-w2/2,-h2/2,w2,h2);
-      } else {
-        const boxW=(s.text.length*(s.size||72)*0.5)*s.scale*(w/exportSize);
-        const boxH=(s.size||72)*s.scale*(h/exportSize);
-        ctx.strokeRect(-boxW/2,-boxH/2,boxW,boxH);
-      }
-      ctx.restore();
-    }
-  }
-  ctx.restore();
+// Draw selection rectangle
+if(selectedId){
+const s=layers.find(l=>l.id===selectedId);
+if(s){
+ctx.save(); ctx.strokeStyle='rgba(240,180,41,0.9)'; ctx.lineWidth=2; ctx.setLineDash([6,4]); ctx.translate(s.x,s.y); ctx.rotate(s.rot||0);
+if(s.type==='image'){ const w=s.img.width*(s.scale||1); const h=s.img.height*(s.scale||1); ctx.strokeRect(-w/2,-h/2,w,h);}
+else{ctx.strokeRect(-200,-(s.size||72)/2,400,(s.size||72));}
+ctx.restore();
+}
+}
 }
 
+// View to export coords
+function viewToExport(cx,cy){
+const rect=view.getBoundingClientRect();
+const x=(cx-rect.left-offset.x)/zoom;
+const y=(cy-rect.top-offset.y)/zoom;
+return {x,y};
+}
+
+// Mouse interactions
+let isPanning=false; let panStart={x:0,y:0}; let panOffsetStart={x:0,y:0};
+view.addEventListener('mousedown',e=>{
+const p=viewToExport(e.clientX,e.clientY);
+for(let i=layers.length-1;i>=0;i--){
+const l=layers[i];
+const dx=p.x-l.x; const dy=p.y-l.y;
+const s=Math.sin(-l.rot||0); const c=Math.cos(-l.rot||0);
+const lx=dx*c-dy*s; const ly=dx*s+dy*c;
+if(l.type==='image'){ const w=l.img.width*(l.scale||1); const h=l.img.height*(l.scale||1);
+if(Math.abs(lx)<=w/2 && Math.abs(ly)<=h/2){selectedId=l.id;dragging=true;dragOffset={x:lx,y:ly};updateLayerControls();draw(); return;}}
+else{const boxW=(l.text.length*(l.size||72)*0.5)*(l.scale||1); const boxH=(l.size||72)*(l.scale||1);
+if(Math.abs(lx)<=boxW/2 && Math.abs(ly)<=boxH/2){selectedId=l.id;dragging=true;dragOffset={x:lx,y:ly};updateLayerControls();draw();return;}}
+}
+// Pan if clicked empty
+isPanning=true; panStart={x:e.clientX,y:e.clientY}; panOffsetStart={x:offset.x,y:offset.y};
+});
+window.addEventListener('mousemove',e=>{
+if(dragging && selectedId){
+const p=viewToExport(e.clientX,e.clientY);
+const l=layers.find(x=>x.id===selectedId); if(!l)return;
+const s=Math.sin(l.rot||0); const c=Math.cos(l.rot||0);
+const wx=dragOffset.x*c+dragOffset.y*-s; const wy=dragOffset.x*s+dragOffset.y*c;
+l.x=p.x-wx; l.y=p.y-wy; updateLayerControls(); draw();}
+else if(isPanning){offset.x=panOffsetStart.x+(e.clientX-panStart.x); offset.y=panOffsetStart.y+(e.clientY-panStart.y); draw();}
+});
+window.addEventListener('mouseup',()=>{dragging=false; isPanning=false;});
+
+// Zoom
+view.addEventListener('wheel',e=>{e.preventDefault(); const z=e.deltaY<0?1.1:0.9; zoom*=z; draw();});
+
+// Layer UI
 function rebuildLayersList(){
-  const ul=document.getElementById('layersList'); ul.innerHTML='';
-  layers.forEach((l,i)=>{
-    const li=document.createElement('li');
-    const title=l.type==='image'?`Image ${i+1}`:(l.text||'Text');
-    li.innerHTML=`<div style="display:flex;gap:8px;align-items:center">
-      <div style="width:36px;height:24px;border-radius:4px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:12px">
-      ${l.type==='image'?'IMG':'T'}</div><div style="min-width:120px">${title}</div>
-      </div><div style="display:flex;gap:6px">
-      <button data-id="${l.id}" class="btn ghost small">Sel</button></div>`;
-    ul.appendChild(li);
-    li.querySelector('button').addEventListener('click',()=>{ selectLayer(l.id); });
-  });
+const ul=document.getElementById('layersList'); ul.innerHTML='';
+layers.forEach((l,i)=>{
+const li=document.createElement('li');
+li.innerHTML=`<div>${l.type==='image'?'IMG':'TXT'} ${i+1}</div><button data-id="${l.id}" class="btn ghost small">Sel</button>`;
+ul.appendChild(li);
+li.querySelector('button').addEventListener('click',()=>{selectedId=l.id;updateLayerControls();draw();document.getElementById('layerControls').style.display='block';});
+});
 }
-
-function selectLayer(id){
-  selectedId=id;
-  document.getElementById('layerControls').style.display=id?'block':'none';
-  updateLayerControls();
-  draw();
+function updateLayerControls(){const l=layers.find(x=>x.id===selectedId);if(!l)return;
+document.getElementById('layerScale').value=l.scale||1;
+document.getElementById('layerRot').value=(l.rot||0)*180/Math.PI;
+document.getElementById('layerOpacity').value=l.opacity||1;
 }
-
-function updateLayerControls(){
-  const l=layers.find(x=>x.id===selectedId);
-  if(!l) return;
-  document.getElementById('layerScale').value=l.scale||1;
-  document.getElementById('layerRot').value=(l.rot||0)*180/Math.PI;
-  document.getElementById('layerOpacity').value=l.opacity||1;
-}
-
-// Layer controls
-document.getElementById('layerScale').addEventListener('input',e=>{const l=layers.find(x=>x.id===selectedId); if(!l)return;l.scale=parseFloat(e.target.value); draw();});
-document.getElementById('layerRot').addEventListener('input',e=>{const l=layers.find(x=>x.id===selectedId); if(!l)return;l.rot=parseFloat(e.target.value)*Math.PI/180; draw();});
-document.getElementById('layerOpacity').addEventListener('input',e=>{const l=layers.find(x=>x.id===selectedId); if(!l)return;l.opacity=parseFloat(e.target.value); draw();});
-document.getElementById('delLayer').addEventListener('click',()=>{layers=layers.filter(l=>l.id!==selectedId);selectedId=null;document.getElementById('layerControls').style.display='none';rebuildLayersList();draw();});
+document.getElementById('layerScale').addEventListener('input',e=>{const l=layers.find(x=>x.id===selectedId);if(!l)return;l.scale=parseFloat(e.target.value);draw();});
+document.getElementById('layerRot').addEventListener('input',e=>{const l=layers.find(x=>x.id===selectedId);if(!l)return;l.rot=parseFloat(e.target.value)*Math.PI/180;draw();});
+document.getElementById('layerOpacity').addEventListener('input',e=>{const l=layers.find(x=>x.id===selectedId);if(!l)return;l.opacity=parseFloat(e.target.value);draw();});
+document.getElementById('delLayer').addEventListener('click',()=>{layers=layers.filter(x=>x.id!==selectedId);selectedId=null;document.getElementById('layerControls').style.display='none';rebuildLayersList();draw();});
 document.getElementById('centerLayer').addEventListener('click',()=>{const l=layers.find(x=>x.id===selectedId);if(!l)return;l.x=exportSize/2;l.y=exportSize/2;draw();});
-document.getElementById('bringFront').addEventListener('click',()=>{if(!selectedId)return;const i=layers.findIndex(l=>l.id===selectedId);if(i>=0){const [l]=layers.splice(i,1);layers.push(l);rebuildLayersList();draw();}});
-document.getElementById('sendBack').addEventListener('click',()=>{if(!selectedId)return;const i=layers.findIndex(l=>l.id===selectedId);if(i>=0){const [l]=layers.splice(i,1);layers.unshift(l);rebuildLayersList();draw();}});
+document.getElementById('bringFront').addEventListener('click',()=>{if(!selectedId)return;const i=layers.findIndex(x=>x.id===selectedId);if(i>=0){const [l]=layers.splice(i,1);layers.push(l);rebuildLayersList();draw();}});
+document.getElementById('sendBack').addEventListener('click',()=>{if(!selectedId)return;const i=layers.findIndex(x=>x.id===selectedId);if(i>=0){const [l]=layers.splice(i,1);layers.unshift(l);rebuildLayersList();draw();}});
 
 // Export
 function exportImage(includeTemplate){
-  showToast('Exportando...');
-  composeToOff(includeTemplate);
-  const link=document.createElement('a');
-  link.download='skin.png';
-  link.href=off.toDataURL('image/png');
-  link.click();
+showToast('Exportando...');
+composeToOff(includeTemplate);
+const link=document.createElement('a'); link.href=off.toDataURL('image/png'); link.download='skin.png'; link.click();
 }
 document.getElementById('exportClean').addEventListener('click',()=>exportImage(false));
 document.getElementById('exportWith').addEventListener('click',()=>exportImage(true));
 
 // Save / Load
 document.getElementById('saveProj').addEventListener('click',()=>{
-  const data={layers,template:null};
-  if(templateImg){data.template=templateImg.src;}
-  const json=JSON.stringify(data);
-  const link=document.createElement('a');
-  link.href='data:text/json;charset=utf-8,'+encodeURIComponent(json);
-  link.download='project.json';
-  link.click();
+const data={layers,template:null}; if(templateImg)data.template=off.toDataURL();
+localStorage.setItem('ssproj',JSON.stringify(data)); showToast('Projeto salvo');
 });
 document.getElementById('loadProj').addEventListener('click',()=>{
-  const input=document.createElement('input'); input.type='file'; input.accept='application/json';
-  input.onchange=e=>{
-    const f=input.files[0]; if(!f)return;
-    const reader=new FileReader();
-    reader.onload=()=>{ try{
-      const data=JSON.parse(reader.result);
-      layers=data.layers||[];
-      if(data.template){const i=new Image(); i.onload=()=>{templateImg=i; draw();}; i.src=data.template;}
-      rebuildLayersList(); draw();
-    }catch(e){alert('Erro ao carregar projeto')}}
-    reader.readAsText(f);
-  };
-  input.click();
+const data=JSON.parse(localStorage.getItem('ssproj')||'{}'); if(!data.layers)return;
+layers=data.layers; if(data.template){const i=new Image(); i.onload=()=>{templateImg=i; draw();}; i.src=data.template;}
+rebuildLayersList(); draw(); showToast('Projeto carregado');
 });
+document.getElementById('resetProj').addEventListener('click',()=>{layers=[];templateImg=null;selectedId=null;document.getElementById('layerControls').style.display='none';rebuildLayersList();draw();showToast('Resetado');});
 
-document.getElementById('resetProj').addEventListener('click',()=>{layers=[];selectedId=null;templateImg=null;document.getElementById('layerControls').style.display='none';rebuildLayersList();draw();});
-
-fitCanvas();
+draw();
 </script>
 </body>
 </html>
