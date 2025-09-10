@@ -399,11 +399,11 @@
         
         // Variáveis para o 3D
         let scene, camera, renderer, truckGroup, texture;
-        const R_CABIN_TEMPLATE_URL = "R Cabin 8x4 (High Roof).jpg";
+        const R_CABIN_TEMPLATE_URL = "https://3ncmpbp3mbjcjyu16jp1w16yp39fvvldzb88p0bfthng3a-h802130808.scf.usercontent.goog/bf5df825-a699-43a0-bf22-3c8d69111c20";
 
         // API Key para o Gemini (vazia para ser fornecida pelo ambiente de execução)
         const apiKey = "";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
 
         // --- Gerenciamento de Páginas ---
         function showPage(pageId) {
@@ -521,7 +521,7 @@
             loadingBar.style.width = '0%';
             generateAiBtn.disabled = true;
 
-            const prompt = aiPrompt.value.trim() || 'uma skin de caminhão para euro truck simulator 2';
+            const prompt = aiPrompt.value.trim() || 'a professional truck skin for Euro Truck Simulator 2';
             let exponentialDelay = 1000;
             const maxRetries = 5;
 
@@ -537,10 +537,11 @@
             for (let i = 0; i < maxRetries; i++) {
                 try {
                     const payload = {
-                        instances: [{ prompt: prompt }],
-                        parameters: { "sampleCount": 1 }
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseModalities: ['IMAGE']
+                        },
                     };
-
                     const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -571,22 +572,27 @@
             clearInterval(progressInterval);
             loadingBar.style.width = '100%';
 
-            if (result && result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-                const base64Data = result.predictions[0].bytesBase64Encoded;
-                const imageUrl = `data:image/png;base64,${base64Data}`;
-                aiResultImage.src = imageUrl;
+            if (result && result.candidates && result.candidates[0].content && result.candidates[0].content.parts.length > 0) {
+                const base64Data = result.candidates[0].content.parts.find(p => p.inlineData)?.inlineData?.data;
+                if (base64Data) {
+                    const imageUrl = `data:image/png;base64,${base64Data}`;
+                    aiResultImage.src = imageUrl;
                 
-                // Opção para abrir no editor
-                const openInEditorBtn = aiResult.querySelector('button');
-                openInEditorBtn.onclick = () => {
-                    const tempImg = new Image();
-                    tempImg.onload = () => {
-                        ctx.drawImage(tempImg, 0, 0, mainCanvas.width, mainCanvas.height);
-                        update3DTexture();
-                        showPage('editor');
+                    // Opção para abrir no editor
+                    const openInEditorBtn = aiResult.querySelector('button');
+                    openInEditorBtn.onclick = () => {
+                        const tempImg = new Image();
+                        tempImg.onload = () => {
+                            ctx.drawImage(tempImg, 0, 0, mainCanvas.width, mainCanvas.height);
+                            update3DTexture();
+                            showPage('editor');
+                        };
+                        tempImg.src = imageUrl;
                     };
-                    tempImg.src = imageUrl;
-                };
+                } else {
+                    console.error('Failed to get image data from API response.');
+                    aiResultImage.src = 'https://placehold.co/800x600/cc0000/ffffff?text=Falha+na+Geração';
+                }
 
             } else {
                 console.error('Failed to generate image from API.');
@@ -742,4 +748,3 @@
     </script>
 </body>
 </html>
-
