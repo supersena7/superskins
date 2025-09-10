@@ -325,4 +325,95 @@ function updateLayerControls(){
   const l=layers.find(x=>x.id===selectedId); if(!l) return;
   document.getElementById('layerScale').value=l.scale||1;
   document.getElementById('layerRot').value=(l.rot||0)*180/Math.PI;
-  document.getElementById('layerOpacity').value=l
+  document.getElementById('layerOpacity').value=l.opacity||1;
+}
+
+// layer controls
+document.getElementById('layerScale').addEventListener('input', e=>{
+  const l=layers.find(x=>x.id===selectedId); if(!l) return;
+  l.scale=parseFloat(e.target.value); draw();
+});
+document.getElementById('layerRot').addEventListener('input', e=>{
+  const l=layers.find(x=>x.id===selectedId); if(!l) return;
+  l.rot=parseFloat(e.target.value)*Math.PI/180; draw();
+});
+document.getElementById('layerOpacity').addEventListener('input', e=>{
+  const l=layers.find(x=>x.id===selectedId); if(!l) return;
+  l.opacity=parseFloat(e.target.value); draw();
+});
+document.getElementById('delLayer').addEventListener('click', ()=>{
+  layers=layers.filter(x=>x.id!==selectedId);
+  selectedId=null; document.getElementById('layerControls').style.display='none';
+  rebuildLayersList(); draw();
+});
+document.getElementById('centerLayer').addEventListener('click', ()=>{
+  const l=layers.find(x=>x.id===selectedId); if(!l) return;
+  l.x=exportSize/2; l.y=exportSize/2; draw();
+});
+
+// drag & move
+view.addEventListener('mousedown', e=>{
+  const p=viewToExport(e.clientX,e.clientY);
+  for(let i=layers.length-1;i>=0;i--){
+    const l=layers[i];
+    let w=0,h=0;
+    if(l.type==='image'){ w=l.img.width*l.scale; h=l.img.height*l.scale; }
+    else{ w=(l.text.length*(l.size||72)*0.5)*l.scale; h=(l.size||72)*l.scale; }
+    if(p.x>=l.x-w/2 && p.x<=l.x+w/2 && p.y>=l.y-h/2 && p.y<=l.y+h/2){
+      selectLayer(l.id); dragging=true;
+      dragOffset.x=p.x-l.x; dragOffset.y=p.y-l.y;
+      return;
+    }
+  }
+});
+window.addEventListener('mousemove', e=>{
+  if(!dragging) return;
+  const p=viewToExport(e.clientX,e.clientY);
+  const l=layers.find(x=>x.id===selectedId); if(!l) return;
+  l.x=p.x-dragOffset.x; l.y=p.y-dragOffset.y;
+  draw();
+});
+window.addEventListener('mouseup', e=>{ dragging=false; });
+
+// bring front / send back
+document.getElementById('bringFront').addEventListener('click', ()=>{
+  if(!selectedId) return;
+  const idx=layers.findIndex(x=>x.id===selectedId);
+  if(idx>=0){ const l=layers.splice(idx,1)[0]; layers.push(l); rebuildLayersList(); draw(); }
+});
+document.getElementById('sendBack').addEventListener('click', ()=>{
+  if(!selectedId) return;
+  const idx=layers.findIndex(x=>x.id===selectedId);
+  if(idx>=0){ const l=layers.splice(idx,1)[0]; layers.unshift(l); rebuildLayersList(); draw(); }
+});
+
+// export
+document.getElementById('exportClean').addEventListener('click', ()=>{
+  composeToOff(false);
+  off.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='skin_clean.png'; a.click(); },'image/png');
+  showToast('Exportando skin limpa...');
+});
+document.getElementById('exportWith').addEventListener('click', ()=>{
+  composeToOff(true);
+  off.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='skin_template.png'; a.click(); },'image/png');
+  showToast('Exportando skin com template...');
+});
+
+// save/load/reset
+document.getElementById('saveProj').addEventListener('click', ()=>{
+  localStorage.setItem('skinStudioProj',JSON.stringify({layers}));
+  showToast('Projeto salvo localmente');
+});
+document.getElementById('loadProj').addEventListener('click', ()=>{
+  const p=localStorage.getItem('skinStudioProj');
+  if(p){ const data=JSON.parse(p); layers=data.layers||[]; selectedId=null; rebuildLayersList(); draw(); showToast('Projeto carregado'); }
+});
+document.getElementById('resetProj').addEventListener('click', ()=>{
+  if(confirm('Resetar tudo?')){ layers=[]; templateImg=null; selectedId=null; rebuildLayersList(); draw(); showToast('Reset concluído'); }
+});
+
+// inicial
+fitCanvas();
+</script>
+</body>
+</html>
