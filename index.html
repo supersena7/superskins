@@ -3,92 +3,94 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Super Sena — Skin Studio (4096x4096) — Completo</title>
-  <meta name="description" content="Editor de skins 4096x4096 para ETS2 — camadas, texto, filtros, template ajustável, salvar, exportar PNG." />
+  <title>Super Sena — Skin Studio (4096x4096) — Avançado</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#071018; --card:#071a22; --accent:#f0b429; --muted:#98b4bb; --glass:rgba(255,255,255,0.03);
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+    :root{--bg:#071018;--card:#071a22;--accent:#f0b429;--muted:#98b4bb;font-family:Inter,system-ui,Arial}
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,#041018 0%, #071427 60%);color:#e6f6f9}
-    .app{display:grid;grid-template-columns:260px 1fr 360px;gap:12px;min-height:100vh;padding:18px}
+    .app{display:grid;grid-template-columns:300px 1fr 380px;gap:12px;min-height:100vh;padding:18px}
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-    .brand{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffdf87);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071018}
     h2{margin:0;font-size:16px}
-    .tools{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-    button{background:var(--accent);color:#071018;padding:8px 10px;border-radius:8px;border:none;font-weight:700;cursor:pointer}
-    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
     .small{font-size:13px;color:var(--muted)}
+    .tools{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .row{display:flex;gap:8px}
+    button,.btn-ghost{padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
+    button{background:var(--accent);color:#071418;font-weight:700}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
 
-    /* Canvas area */
+    /* canvas */
     .canvas-wrap{display:flex;align-items:center;justify-content:center;padding:12px}
-    #stage{width:100%;height:calc(100vh - 160px);display:flex;align-items:center;justify-content:center}
+    #stage{width:100%;height:calc(100vh - 160px);display:flex;align-items:center;justify-content:center;position:relative}
     canvas#view{background:#071416;border-radius:6px;max-width:100%;max-height:100%;box-shadow:0 20px 40px rgba(0,0,0,0.6)}
-    .hint{margin-top:8px;color:var(--muted);font-size:13px}
 
-    /* Layers list */
-    ul.layers{list-style:none;margin:8px 0;padding:0;max-height:300px;overflow:auto}
+    ul.layers{list-style:none;margin:8px 0;padding:0;max-height:320px;overflow:auto}
     ul.layers li{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:6px}
-    .layer-actions button{margin-left:6px;padding:6px;border-radius:6px}
+    .thumb{width:48px;height:48px;border-radius:6px;background:#021;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .thumb img{max-width:100%;max-height:100%;display:block}
 
-    /* controls */
     .control-row{display:flex;gap:8px;align-items:center;margin-top:8px}
-    input[type="range"]{width:100%}
-    .color-input{width:44px;height:34px;padding:0;border-radius:6px;border:1px solid rgba(255,255,255,0.06)}
+    input[type=range]{width:100%}
+    input[type=color]{width:44px;height:34px;padding:0;border-radius:6px;border:1px solid rgba(255,255,255,0.06)}
 
-    /* handles visual */
     .handle{position:absolute;width:12px;height:12px;border-radius:3px;background:var(--accent);border:2px solid rgba(255,255,255,0.12);display:none;pointer-events:none}
 
-    @media (max-width:1100px){ .app{grid-template-columns:1fr} .panel{margin-bottom:12px} }
+    @media (max-width:1100px){.app{grid-template-columns:1fr} .panel{margin-bottom:12px}}
   </style>
 </head>
 <body>
   <div class="app">
-    <!-- left tools -->
+    <!-- left -->
     <div class="panel">
-      <div class="brand"><div class="logo">SS</div><div><h2>Super Sena Studio</h2><div class="small">Editor 4096×4096 — completo</div></div></div>
+      <div class="brand"><div class="logo">SS</div><div><h2>Super Sena Studio</h2><div class="small">Editor 4096×4096 — versão avançada</div></div></div>
 
       <div class="tools">
-        <label class="small">Template (fundo / guia)</label>
+        <label class="small">Template (guia)</label>
         <input id="templateFile" type="file" accept="image/*" />
 
         <label class="small">Imagem / Logo</label>
         <input id="imageFile" type="file" accept="image/*" />
 
-        <button id="addTextBtn" style="margin-top:6px">Adicionar Texto</button>
+        <div class="row">
+          <button id="addTextBtn">Adicionar Texto</button>
+          <button id="addRectBtn" class="btn-ghost">Retângulo</button>
+          <button id="addCircleBtn" class="btn-ghost">Círculo</button>
+        </div>
 
-        <div style="display:flex;gap:8px;margin-top:6px">
+        <div class="row">
+          <button id="addLineBtn" class="btn-ghost">Linha</button>
+          <button id="addGradientBtn" class="btn-ghost">Gradiente</button>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
           <button id="exportClean">Exportar (Sem Template)</button>
           <button id="exportWith" class="btn-ghost">Exportar (Com Template)</button>
         </div>
 
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button id="saveProj">Salvar Projeto</button>
+          <button id="saveProj">Salvar</button>
           <button id="loadProj" class="btn-ghost">Carregar</button>
           <button id="resetProj" class="btn-ghost">Resetar</button>
         </div>
 
-        <div class="hint">Atalhos: E = exportar (limpo), C = centralizar, Delete = remover camada, Ctrl+S = salvar</div>
+        <div class="small hint" style="margin-top:8px">Atalhos: roda=zoom, botão-direito arrasta=pan, E exportar, C centralizar, Delete remover, Ctrl+S salvar</div>
 
-        <hr style="margin-top:10px;border:none;height:1px;background:rgba(255,255,255,0.02)">
+        <hr style="margin-top:8px;border:none;height:1px;background:rgba(255,255,255,0.02)">
 
         <div class="small" style="margin-top:8px">Redes</div>
         <div style="display:flex;gap:8px;margin-top:6px">
           <a id="btnDiscord" class="btn-ghost" href="https://discord.gg/8SzFU4BnnB" target="_blank">Discord</a>
           <a id="btnInsta" class="btn-ghost" href="https://instagram.com/supersena7" target="_blank">Instagram</a>
         </div>
-
       </div>
     </div>
 
-    <!-- center canvas -->
+    <!-- center -->
     <div class="panel canvas-wrap">
       <div id="stage">
         <canvas id="view"></canvas>
-        <!-- handles visual only -->
         <div class="handle" id="h-tl"></div>
         <div class="handle" id="h-tr"></div>
         <div class="handle" id="h-bl"></div>
@@ -96,7 +98,7 @@
       </div>
     </div>
 
-    <!-- right properties -->
+    <!-- right -->
     <div class="panel">
       <div><strong>Status</strong><div id="metaInfo" class="small">Pronto</div></div>
 
@@ -111,146 +113,153 @@
 
       <div id="layerProps" style="margin-top:12px;display:none">
         <div class="small">Propriedades da camada</div>
-        <div class="control-row"><label style="width:80px">Visível</label><input id="layerVisible" type="checkbox"></div>
-        <div class="control-row"><label style="width:80px">X</label><input id="propX" type="number" style="flex:1"></div>
-        <div class="control-row"><label style="width:80px">Y</label><input id="propY" type="number" style="flex:1"></div>
-        <div class="control-row"><label style="width:80px">Escala</label><input id="propScale" type="range" min="0.05" max="3" step="0.01" value="1"></div>
-        <div class="control-row"><label style="width:80px">Rot (°)</label><input id="propRot" type="range" min="-180" max="180" step="1" value="0"></div>
-        <div class="control-row"><label style="width:80px">Opacidade</label><input id="propOpacity" type="range" min="0" max="1" step="0.01" value="1"></div>
+        <div class="control-row"><label style="width:70px">Tipo</label><div id="propType" class="small"></div></div>
+        <div class="control-row"><label style="width:70px">Visível</label><input id="layerVisible" type="checkbox"></div>
+        <div class="control-row"><label style="width:70px">X</label><input id="propX" type="number" style="flex:1"></div>
+        <div class="control-row"><label style="width:70px">Y</label><input id="propY" type="number" style="flex:1"></div>
+        <div class="control-row"><label style="width:70px">Escala</label><input id="propScale" type="range" min="0.05" max="3" step="0.01" value="1"></div>
+        <div class="control-row"><label style="width:70px">Rot (°)</label><input id="propRot" type="range" min="-180" max="180" step="1" value="0"></div>
+        <div class="control-row"><label style="width:70px">Opacidade</label><input id="propOpacity" type="range" min="0" max="1" step="0.01" value="1"></div>
 
-        <div style="margin-top:8px" class="small">Filtros</div>
-        <div class="control-row"><label style="width:80px">Brilho</label><input id="filterBrightness" type="range" min="0" max="2" step="0.01" value="1"></div>
-        <div class="control-row"><label style="width:80px">Contraste</label><input id="filterContrast" type="range" min="0" max="2" step="0.01" value="1"></div>
-        <div class="control-row"><label style="width:80px">Saturação</label><input id="filterSaturate" type="range" min="0" max="3" step="0.01" value="1"></div>
-        <div class="control-row"><label style="width:80px">Blur</label><input id="filterBlur" type="range" min="0" max="10" step="0.1" value="0"></div>
+        <div style="margin-top:8px" class="small">Efeitos</div>
+        <div class="control-row"><label style="width:70px">Sombra</label><input id="effectShadow" type="range" min="0" max="60" step="1" value="0"></div>
+        <div class="control-row"><label style="width:70px">Stroke</label><input id="effectStroke" type="range" min="0" max="12" step="1" value="0"></div>
+        <div class="control-row"><label style="width:70px">Glow</label><input id="effectGlow" type="range" min="0" max="60" step="1" value="0"></div>
+        <div class="control-row"><label style="width:70px">Cor</label><input id="propColor" type="color"></div>
 
         <div style="margin-top:8px;display:flex;gap:8px">
           <button id="delLayer" class="btn-ghost">Remover</button>
           <button id="centerLayer" class="btn-ghost">Centralizar</button>
         </div>
       </div>
-
     </div>
   </div>
 
   <div id="toast" style="position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:rgba(0,0,0,0.8);padding:8px 12px;border-radius:8px;color:#fff;display:none;z-index:9999">...</div>
 
   <script>
-    // Full-featured editor single-file implementation
     const EXPORT_SIZE = 4096;
-    // offscreen full-res canvas
     const off = document.createElement('canvas'); off.width = EXPORT_SIZE; off.height = EXPORT_SIZE; const offCtx = off.getContext('2d');
-
-    // visible canvas
     const view = document.getElementById('view'); const ctx = view.getContext('2d');
 
+    // camera for zoom/pan
+    let camera = {zoom: 1, tx:0, ty:0};
+
     // state
-    let templateImg = null; // template image object
-    let layers = []; // array of layer objects: {id,type('image'|'text'|'template'),img,text,font,size,x,y,scale,rot,opacity,visible,filters}
+    let templateImg = null;
+    let layers = []; // layer: {id,type,img/text, x,y,scale,rot,opacity,visible,filters,effects}
     let selectedId = null;
 
     function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
     function showToast(msg){ const t=document.getElementById('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
 
-    // Fit view canvas to stage container
+    // fit view size
     function fitView(){ const stage = document.getElementById('stage'); const rect = stage.getBoundingClientRect(); const size = Math.min(rect.width - 24, rect.height - 24); view.width = size; view.height = size; drawPreview(); }
     window.addEventListener('resize', fitView);
 
-    // Layer helpers
-    function addImageLayer(img){ const layer = {id:uid(), type:'image', img, x:EXPORT_SIZE/2, y:EXPORT_SIZE/2, scale: Math.min(1, (EXPORT_SIZE*0.25)/Math.max(img.width,img.height)), rot:0, opacity:1, visible:true, filters:{brightness:1,contrast:1,saturate:1,blur:0}}; layers.push(layer); rebuildLayersList(); selectLayer(layer.id); drawPreview(); }
-    function addTemplateLayer(img){ templateImg = img; // ensure template is separate and not part of layers array
-      // store template natural size for correct scaling when composing
-      showToast('Template carregado'); drawPreview(); }
-    function addTextLayer(text,font='Inter',size=120,color='#ffffff'){ const layer={id:uid(),type:'text',text,font,size,x:EXPORT_SIZE/2,y:EXPORT_SIZE/2,scale:1,rot:0,opacity:1,visible:true,color,filters:{brightness:1,contrast:1,saturate:1,blur:0}}; layers.push(layer); rebuildLayersList(); selectLayer(layer.id); drawPreview(); }
+    // add layers
+    function addImageLayer(img){ const layer = {id:uid(),type:'image',img,x:EXPORT_SIZE/2,y:EXPORT_SIZE/2,scale:Math.min(1,(EXPORT_SIZE*0.25)/Math.max(img.width,img.height)),rot:0,opacity:1,visible:true,filters:{brightness:1,contrast:1,saturate:1,blur:0},effects:{shadow:0,stroke:0,glow:0},meta:{w:img.width,h:img.height}}; layers.push(layer); rebuildLayersList(); selectLayer(layer.id); drawPreview(); }
+    function addTemplateLayer(img){ templateImg = img; showToast('Template carregado'); fitView(); drawPreview(); }
+    function addTextLayer(text,font='Inter',size=220,color='#ffffff'){ const layer={id:uid(),type:'text',text,font,size,x:EXPORT_SIZE/2,y:EXPORT_SIZE/2,scale:1,rot:0,opacity:1,visible:true,color,filters:{},effects:{shadow:0,stroke:0,glow:0}}; layers.push(layer); rebuildLayersList(); selectLayer(layer.id); drawPreview(); }
+    function addRectLayer(w=800,h=400,fill='#ffffff'){ const c=document.createElement('canvas'); c.width=w; c.height=h; const cx=c.getContext('2d'); cx.fillStyle=fill; cx.fillRect(0,0,w,h); const img=new Image(); img.src=c.toDataURL(); img.onload=()=>{ addImageLayer(img); }; }
+    function addCircleLayer(d=600,fill='#ffffff'){ const c=document.createElement('canvas'); c.width=d; c.height=d; const cx=c.getContext('2d'); cx.beginPath(); cx.arc(d/2,d/2,d/2,0,Math.PI*2); cx.fillStyle=fill; cx.fill(); const img=new Image(); img.src=c.toDataURL(); img.onload=()=>addImageLayer(img); }
+    function addLineLayer(w=800,h=6,stroke='#ffffff'){ const c=document.createElement('canvas'); c.width=w; c.height=20; const cx=c.getContext('2d'); cx.fillStyle=stroke; cx.fillRect(0,7,w,h); const img=new Image(); img.src=c.toDataURL(); img.onload=()=>addImageLayer(img); }
+    function addGradientLayer(type='linear',w=1200,h=800,colors=[{offset:0,color:'#ff7a18'},{offset:1,color:'#ffdf87'}]){ const c=document.createElement('canvas'); c.width=w; c.height=h; const cx=c.getContext('2d'); let grad; if(type==='radial') grad = cx.createRadialGradient(w/2,h/2,10,w/2,h/2,Math.max(w,h)/2); else grad = cx.createLinearGradient(0,0,w,0); colors.forEach(col=>grad.addColorStop(col.offset,col.color)); cx.fillStyle=grad; cx.fillRect(0,0,w,h); const img=new Image(); img.src=c.toDataURL(); img.onload=()=>addImageLayer(img); }
 
     function removeLayer(id){ layers = layers.filter(l=>l.id!==id); if(selectedId===id) selectedId=null; rebuildLayersList(); drawPreview(); }
-    function bringFront(id){ const i = layers.findIndex(l=>l.id===id); if(i>-1){ const [it]=layers.splice(i,1); layers.push(it); rebuildLayersList(); drawPreview(); } }
-    function sendBack(id){ const i = layers.findIndex(l=>l.id===id); if(i>-1){ const [it]=layers.splice(i,1); layers.unshift(it); rebuildLayersList(); drawPreview(); } }
-
+    function bringFront(id){ const i = layers.findIndex(l=>l.id===id); if(i>-1){ const [it] = layers.splice(i,1); layers.push(it); rebuildLayersList(); drawPreview(); } }
+    function sendBack(id){ const i = layers.findIndex(l=>l.id===id); if(i>-1){ const [it] = layers.splice(i,1); layers.unshift(it); rebuildLayersList(); drawPreview(); } }
     function selectLayer(id){ selectedId = id; updateLayerPropsUI(); drawPreview(); }
     function getSelected(){ return layers.find(l=>l.id===selectedId); }
 
-    // Compose full-resolution to offscreen (includeTemplate option)
+    // Compose full resolution into offscreen
     function composeToOff(includeTemplate=true){ offCtx.clearRect(0,0,EXPORT_SIZE,EXPORT_SIZE);
-      // background transparent
-      if(includeTemplate && templateImg){ // fit template to EXPORT_SIZE preserving aspect
-        const tw = templateImg.width, th = templateImg.height; const r = Math.min(EXPORT_SIZE/tw, EXPORT_SIZE/th); const nw = tw*r, nh = th*r; const dx = (EXPORT_SIZE-nw)/2, dy=(EXPORT_SIZE-nh)/2; offCtx.drawImage(templateImg,0,0,tw,th,dx,dy,nw,nh);
-      }
-      // draw layers in order
-      for(const l of layers){ if(!l.visible) continue; offCtx.save(); // filters
-        const f = l.filters||{brightness:1,contrast:1,saturate:1,blur:0}; const parts=[]; if(f.blur) parts.push(`blur(${f.blur}px)`); parts.push(`brightness(${f.brightness})`); parts.push(`contrast(${f.contrast})`); parts.push(`saturate(${f.saturate})`); offCtx.filter = parts.join(' ');
+      if(includeTemplate && templateImg){ const tw=templateImg.width, th=templateImg.height; const r=Math.min(EXPORT_SIZE/tw, EXPORT_SIZE/th); const nw=tw*r, nh=th*r; const dx=(EXPORT_SIZE-nw)/2, dy=(EXPORT_SIZE-nh)/2; offCtx.drawImage(templateImg,0,0,tw,th,dx,dy,nw,nh); }
+      for(const l of layers){ if(!l.visible) continue; offCtx.save(); // effects: shadow/glow
+        if(l.effects){ const glow = l.effects.glow||0; const shadow = l.effects.shadow||0; if(shadow||glow){ offCtx.shadowColor = 'rgba(0,0,0,0.6)'; offCtx.shadowBlur = shadow + glow; offCtx.shadowOffsetX = shadow>0? shadow/6 : 0; offCtx.shadowOffsetY = shadow>0? shadow/6 : 0; } }
         offCtx.globalAlpha = l.opacity ?? 1;
-        offCtx.translate(l.x, l.y); offCtx.rotate(l.rot || 0);
-        if(l.type==='image'){ const w = l.img.width * (l.scale||1); const h = l.img.height * (l.scale||1); offCtx.drawImage(l.img, -w/2, -h/2, w, h);
-        } else if(l.type==='text'){ offCtx.scale(l.scale||1, l.scale||1); offCtx.font = `${l.size||120}px ${l.font||'Inter'}`; offCtx.fillStyle = l.color||'#fff'; offCtx.textAlign='center'; offCtx.textBaseline='middle'; offCtx.fillText(l.text, 0, 0);
+        offCtx.translate(l.x, l.y); offCtx.rotate(l.rot||0);
+        if(l.type==='image'){
+          const w = l.meta?.w * (l.scale||1) || (l.img.width*(l.scale||1)); const h = l.meta?.h * (l.scale||1) || (l.img.height*(l.scale||1)); // stroke
+          if(l.effects && l.effects.stroke){ if(l.effects.stroke>0){ offCtx.lineWidth = l.effects.stroke; offCtx.strokeStyle = l.color || '#000'; offCtx.strokeRect(-w/2,-h/2,w,h); } }
+          offCtx.drawImage(l.img, -w/2, -h/2, w, h);
+        } else if(l.type==='text'){
+          offCtx.scale(l.scale||1, l.scale||1);
+          offCtx.font = `${l.size||120}px ${l.font||'Inter'}`;
+          if(l.effects && l.effects.stroke){ if(l.effects.stroke>0){ offCtx.lineWidth = l.effects.stroke; offCtx.strokeStyle = '#000'; offCtx.strokeText(l.text, 0, 0); } }
+          offCtx.fillStyle = l.color || '#fff'; offCtx.textAlign='center'; offCtx.textBaseline='middle'; offCtx.fillText(l.text, 0, 0);
         }
-        offCtx.restore(); offCtx.filter='none';
+        offCtx.restore(); offCtx.shadowBlur = 0; offCtx.shadowOffsetX=0; offCtx.shadowOffsetY=0; offCtx.filter='none';
       }
     }
 
-    // draw preview scaled down into view canvas
-    function drawPreview(){ // compose with template for preview
-      composeToOff(true);
-      ctx.clearRect(0,0,view.width,view.height);
+    // draw preview with camera transform
+    function drawPreview(){ composeToOff(true); // clear view
+      ctx.save(); ctx.clearRect(0,0,view.width,view.height);
+      // center export in view, apply camera
+      const viewportSize = view.width; const scaleCenter = viewportSize / EXPORT_SIZE; // base fit scale
+      const actualScale = scaleCenter * camera.zoom;
+      ctx.setTransform(actualScale,0,0,actualScale, camera.tx + (view.width - EXPORT_SIZE*actualScale)/2, camera.ty + (view.height - EXPORT_SIZE*actualScale)/2);
       ctx.imageSmoothingEnabled = true;
-      ctx.drawImage(off, 0, 0, view.width, view.height);
-      drawSelection();
+      ctx.drawImage(off, 0, 0);
+      ctx.setTransform(1,0,0,1,0,0);
+      drawSelection(); ctx.restore();
     }
 
-    function drawSelection(){ const sel = getSelected(); if(!sel) { hideHandles(); return; }
-      const scale = view.width / EXPORT_SIZE; ctx.save(); ctx.translate(sel.x*scale, sel.y*scale); ctx.rotate(sel.rot||0); ctx.strokeStyle='rgba(240,180,41,0.95)'; ctx.lineWidth=2; ctx.setLineDash([8,6]); if(sel.type==='image'){ const w=(sel.img.width*(sel.scale||1))*scale; const h=(sel.img.height*(sel.scale||1))*scale; ctx.strokeRect(-w/2,-h/2,w,h); } else { const estW = (sel.text.length * (sel.size||72) * 0.6) * (sel.scale||1) * scale; const estH = (sel.size||72) * (sel.scale||1) * scale; ctx.strokeRect(-estW/2,-estH/2,estW,estH); } ctx.restore(); showHandles(sel); }
-
-    // handles positioning
-    function showHandles(sel){ const wrap = document.getElementById('stage'); const rect = view.getBoundingClientRect(); const scale = view.width / EXPORT_SIZE; const hw = sel.type==='image' ? (sel.img.width*(sel.scale||1))*scale/2 : (sel.text.length*(sel.size||72)*0.6)*(sel.scale||1)*scale/2; const hh = sel.type==='image' ? (sel.img.height*(sel.scale||1))*scale/2 : (sel.size||72)*(sel.scale||1)*scale/2; const cx = rect.left + sel.x*scale; const cy = rect.top + sel.y*scale; const angle = sel.rot||0; const corners = [ [-hw,-hh], [hw,-hh], [-hw,hh], [hw,hh] ].map(([dx,dy])=>{ const x = cx + (dx*Math.cos(angle) - dy*Math.sin(angle)); const y = cy + (dx*Math.sin(angle) + dy*Math.cos(angle)); return {x,y}; });
-      const ids = ['h-tl','h-tr','h-bl','h-br']; ids.forEach((id,i)=>{ const el=document.getElementById(id); el.style.left = `${corners[i].x - 6}px`; el.style.top = `${corners[i].y - 6}px`; el.style.display='block'; }); }
+    function drawSelection(){ const sel = getSelected(); hideHandles(); if(!sel) return; const viewportSize = view.width; const scaleCenter = viewportSize / EXPORT_SIZE; const actualScale = scaleCenter * camera.zoom; const cx = (sel.x)*actualScale + camera.tx + (view.width - EXPORT_SIZE*actualScale)/2; const cy = (sel.y)*actualScale + camera.ty + (view.height - EXPORT_SIZE*actualScale)/2; const angle = sel.rot||0; const w = (sel.meta?.w || (sel.type==='text' ? sel.size*sel.text.length*0.5 : sel.img.width)) * (sel.scale||1) * actualScale; const h = (sel.meta?.h || sel.size) * (sel.scale||1) * actualScale; const corners = [ [-w/2,-h/2], [w/2,-h/2], [-w/2,h/2], [w/2,h/2] ].map(([dx,dy])=>{ const x = cx + (dx*Math.cos(angle) - dy*Math.sin(angle)); const y = cy + (dx*Math.sin(angle) + dy*Math.cos(angle)); return {x,y}; }); const ids=['h-tl','h-tr','h-bl','h-br']; ids.forEach((id,i)=>{ const el=document.getElementById(id); el.style.left = `${corners[i].x - 6}px`; el.style.top = `${corners[i].y - 6}px`; el.style.display='block'; }); }
     function hideHandles(){ ['h-tl','h-tr','h-bl','h-br'].forEach(id=>document.getElementById(id).style.display='none'); }
 
-    // view -> export coordinates
-    function viewToExport(clientX,clientY){ const rect = view.getBoundingClientRect(); const vx = clientX - rect.left; const vy = clientY - rect.top; const scale = EXPORT_SIZE / view.width; return {x: vx * scale, y: vy * scale}; }
+    // hit test in export coordinates
+    function viewToExport(clientX,clientY){ const rect=view.getBoundingClientRect(); const vx = clientX - rect.left; const vy = clientY - rect.top; const viewportSize = view.width; const scaleCenter = viewportSize / EXPORT_SIZE; const actualScale = scaleCenter * camera.zoom; const offsetX = camera.tx + (view.width - EXPORT_SIZE*actualScale)/2; const offsetY = camera.ty + (view.height - EXPORT_SIZE*actualScale)/2; const ex = (vx - offsetX)/actualScale; const ey = (vy - offsetY)/actualScale; return {x:ex,y:ey}; }
+    function hitTest(p){ for(let i=layers.length-1;i>=0;i--){ const l=layers[i]; if(!l.visible) continue; const dx=p.x - l.x; const dy=p.y - l.y; const s=Math.sin(-l.rot||0); const c=Math.cos(-l.rot||0); const lx = dx*c - dy*s; const ly = dx*s + dy*c; if(l.type==='image'){ const w = (l.meta?.w || l.img.width) * (l.scale||1); const h = (l.meta?.h || l.img.height) * (l.scale||1); if(Math.abs(lx)<=w/2 && Math.abs(ly)<=h/2) return l; } else { const boxW = (l.text.length * (l.size||72) * 0.6) * (l.scale||1); const boxH = (l.size||72) * (l.scale||1); if(Math.abs(lx)<=boxW/2 && Math.abs(ly)<=boxH/2) return l; } } return null; }
 
-    // hit-test layers (topmost)
-    function hitTest(p){ for(let i=layers.length-1;i>=0;i--){ const l=layers[i]; if(!l.visible) continue; const dx = p.x - l.x; const dy = p.y - l.y; const s = Math.sin(-l.rot || 0); const c = Math.cos(-l.rot || 0); const lx = dx*c - dy*s; const ly = dx*s + dy*c; if(l.type==='image'){ const w = l.img.width * (l.scale||1); const h = l.img.height * (l.scale||1); if(Math.abs(lx) <= w/2 && Math.abs(ly) <= h/2) return l; } else { const boxW = (l.text.length * (l.size||72) * 0.6) * (l.scale||1); const boxH = (l.size||72) * (l.scale||1); if(Math.abs(lx) <= boxW/2 && Math.abs(ly) <= boxH/2) return l; } } return null; }
-
-    // dragging
-    let dragging=false; let dragOffset={x:0,y:0};
-    view.addEventListener('mousedown', (ev)=>{ const p = viewToExport(ev.clientX, ev.clientY); const hit = hitTest(p); if(hit){ selectLayer(hit.id); dragging=true; const l = hit; const dx = p.x - l.x; const dy = p.y - l.y; const s = Math.sin(-l.rot || 0); const c = Math.cos(-l.rot || 0); dragOffset.x = dx*c - dy*s; dragOffset.y = dx*s + dy*c; } else { selectLayer(null); } });
-    window.addEventListener('mousemove', (ev)=>{ if(!dragging) return; const sel = getSelected(); if(!sel) return; const p = viewToExport(ev.clientX, ev.clientY); const s = Math.sin(sel.rot || 0); const c = Math.cos(sel.rot || 0); const worldOffsetX = dragOffset.x * c + dragOffset.y * -s; const worldOffsetY = dragOffset.x * s + dragOffset.y * c; sel.x = p.x - worldOffsetX; sel.y = p.y - worldOffsetY; updateLayerPropsUI(); drawPreview(); });
-    window.addEventListener('mouseup', ()=>{ dragging=false; });
+    // dragging & pan & zoom
+    let dragging=false; let dragOffset={x:0,y:0}; let rightPanning=false; let lastMouse={x:0,y:0};
+    view.addEventListener('mousedown', (e)=>{ if(e.button===2){ rightPanning=true; lastMouse={x:e.clientX,y:e.clientY}; return; } const p=viewToExport(e.clientX,e.clientY); const hit=hitTest(p); if(hit){ selectLayer(hit.id); dragging=true; const dx=p.x-hit.x; const dy=p.y-hit.y; const s=Math.sin(-hit.rot||0); const c=Math.cos(-hit.rot||0); dragOffset.x = dx*c - dy*s; dragOffset.y = dx*s + dy*c; } else { selectLayer(null); } });
+    window.addEventListener('mousemove',(e)=>{ if(rightPanning){ const dx = e.clientX - lastMouse.x; const dy = e.clientY - lastMouse.y; camera.tx += dx; camera.ty += dy; lastMouse={x:e.clientX,y:e.clientY}; drawPreview(); return; } if(!dragging) return; const sel=getSelected(); if(!sel) return; const p=viewToExport(e.clientX,e.clientY); const s=Math.sin(sel.rot||0); const c=Math.cos(sel.rot||0); const worldOffsetX = dragOffset.x * c + dragOffset.y * -s; const worldOffsetY = dragOffset.x * s + dragOffset.y * c; sel.x = p.x - worldOffsetX; sel.y = p.y - worldOffsetY; updateLayerPropsUI(); drawPreview(); });
+    window.addEventListener('mouseup',()=>{ dragging=false; rightPanning=false; });
+    view.addEventListener('wheel',(e)=>{ e.preventDefault(); const prevZoom = camera.zoom; camera.zoom *= (e.deltaY>0? 0.95 : 1.05); camera.zoom = Math.max(0.1, Math.min(8, camera.zoom)); // zoom toward mouse
+      const rect=view.getBoundingClientRect(); const mx = e.clientX - rect.left; const my = e.clientY - rect.top; camera.tx -= (mx - camera.tx - (view.width - EXPORT_SIZE*(view.width/EXPORT_SIZE)*prevZoom)/2) * (camera.zoom/prevZoom -1); camera.ty -= (my - camera.ty - (view.height - EXPORT_SIZE*(view.width/EXPORT_SIZE)*prevZoom)/2) * (camera.zoom/prevZoom -1); drawPreview(); }, {passive:false});
+    // disable context menu on canvas
+    view.addEventListener('contextmenu', e=>e.preventDefault());
 
     // UI wiring
-    const templateFile = document.getElementById('templateFile'); const imageFile = document.getElementById('imageFile'); const addTextBtn = document.getElementById('addTextBtn');
-    templateFile.addEventListener('change', e=>{ const f=e.target.files[0]; if(!f) return; const img = new Image(); img.onload = ()=>{ addTemplateLayer(img); fitView(); }; img.src = URL.createObjectURL(f); });
-    imageFile.addEventListener('change', e=>{ const f=e.target.files[0]; if(!f) return; const img = new Image(); img.onload = ()=>{ addImageLayer(img); fitView(); }; img.src = URL.createObjectURL(f); });
-    addTextBtn.addEventListener('click', ()=>{ const txt = prompt('Digite o texto da camada:'); if(txt) addTextLayer(txt,'Inter',160,'#ffffff'); });
+    document.getElementById('imageFile').addEventListener('change', e=>{ const f=e.target.files[0]; if(!f) return; const img=new Image(); img.onload=()=>addImageLayer(img); img.src=URL.createObjectURL(f); });
+    document.getElementById('templateFile').addEventListener('change', e=>{ const f=e.target.files[0]; if(!f) return; const img=new Image(); img.onload=()=>addTemplateLayer(img); img.src=URL.createObjectURL(f); });
+    document.getElementById('addTextBtn').addEventListener('click', ()=>{ const txt = prompt('Texto da camada:'); if(!txt) return; const size = parseInt(prompt('Tamanho (px):', '220')||'220',10); addTextLayer(txt,'Inter',size,'#ffffff'); });
+    document.getElementById('addRectBtn').addEventListener('click', ()=>{ addRectLayer(900,500,'#ffffff'); });
+    document.getElementById('addCircleBtn').addEventListener('click', ()=>{ addCircleLayer(600,'#ffffff'); });
+    document.getElementById('addLineBtn').addEventListener('click', ()=>{ addLineLayer(1000,8,'#ffffff'); });
+    document.getElementById('addGradientBtn').addEventListener('click', ()=>{ addGradientLayer('linear',1200,800,[{offset:0,color:'#ff7a18'},{offset:1,color:'#ffdf87'}]); });
 
-    // layers list UI
-    function rebuildLayersList(){ const ul = document.getElementById('layersList'); ul.innerHTML=''; layers.forEach((l,idx)=>{ const li = document.createElement('li'); li.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div style="width:38px;height:26px;border-radius:6px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;font-size:12px">${l.type==='image'?'IMG':'T'}</div><div style="min-width:120px">${l.type==='image'? 'Image '+(idx+1) : (l.text || 'Text')}</div></div><div style="display:flex;align-items:center" class="layer-actions"><button data-id="${l.id}" class="selBtn btn-ghost">Sel</button><button data-id="${l.id}" class="visBtn btn-ghost">${l.visible? '👁' : '🚫'}</button></div>`; ul.appendChild(li); li.querySelector('.selBtn').addEventListener('click', ()=>selectLayer(l.id)); li.querySelector('.visBtn').addEventListener('click', ()=>{ l.visible = !l.visible; rebuildLayersList(); drawPreview(); }); }); }
+    // layers list
+    function rebuildLayersList(){ const ul=document.getElementById('layersList'); ul.innerHTML=''; layers.forEach((l,idx)=>{ const li=document.createElement('li'); const thumb = createLayerThumb(l); li.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div class="thumb"></div><div style="min-width:120px">${l.type==='image'?'Image '+(idx+1):(l.text||'Text')}</div></div><div style="display:flex;align-items:center"><button data-id="${l.id}" class="selBtn btn-ghost">Sel</button><button data-id="${l.id}" class="visBtn btn-ghost">${l.visible?'👁':'🚫'}</button><button data-id="${l.id}" class="delBtn btn-ghost">✖</button></div>`; ul.appendChild(li); const thumbEl = li.querySelector('.thumb'); thumbEl.appendChild(thumb); li.querySelector('.selBtn').addEventListener('click', ()=>selectLayer(l.id)); li.querySelector('.visBtn').addEventListener('click', ()=>{ l.visible=!l.visible; rebuildLayersList(); drawPreview(); }); li.querySelector('.delBtn').addEventListener('click', ()=>{ if(confirm('Remover camada?')) removeLayer(l.id); }); }); updateLayerPropsUI(); }
 
-    function updateLayerPropsUI(){ const props = document.getElementById('layerProps'); const sel = getSelected(); if(!sel){ props.style.display='none'; document.getElementById('metaInfo').innerText='Pronto'; return; } props.style.display='block'; document.getElementById('metaInfo').innerText = sel.type.toUpperCase(); document.getElementById('layerVisible').checked = !!sel.visible; document.getElementById('propX').value = Math.round(sel.x); document.getElementById('propY').value = Math.round(sel.y); document.getElementById('propScale').value = sel.scale; document.getElementById('propRot').value = Math.round((sel.rot||0)*180/Math.PI); document.getElementById('propOpacity').value = sel.opacity || 1; document.getElementById('filterBrightness').value = sel.filters?.brightness ?? 1; document.getElementById('filterContrast').value = sel.filters?.contrast ?? 1; document.getElementById('filterSaturate').value = sel.filters?.saturate ?? 1; document.getElementById('filterBlur').value = sel.filters?.blur ?? 0; rebuildLayersList(); }
+    function createLayerThumb(layer){ const c=document.createElement('canvas'); c.width=96; c.height=96; const cc = c.getContext('2d'); cc.clearRect(0,0,96,96); if(layer.type==='image'){ const w=layer.meta?.w || layer.img.width; const h=layer.meta?.h || layer.img.height; const r=Math.min(88/w,88/h); const nw=w*r, nh=h*r; cc.drawImage(layer.img,0,0,w,h,(96-nw)/2,(96-nh)/2,nw,nh); } else if(layer.type==='text'){ cc.fillStyle='#fff'; cc.font='12px Inter'; cc.textAlign='center'; cc.fillText(layer.text,48,48); } return c; }
 
-    // props change handlers
-    document.getElementById('layerVisible').addEventListener('change', e=>{ const s = getSelected(); if(!s) return; s.visible = e.target.checked; drawPreview(); rebuildLayersList(); });
+    // properties UI
+    function updateLayerPropsUI(){ const p=document.getElementById('layerProps'); const sel=getSelected(); if(!sel){ p.style.display='none'; document.getElementById('metaInfo').innerText='Pronto'; return; } p.style.display='block'; document.getElementById('propType').innerText = sel.type.toUpperCase(); document.getElementById('layerVisible').checked = !!sel.visible; document.getElementById('propX').value = Math.round(sel.x); document.getElementById('propY').value = Math.round(sel.y); document.getElementById('propScale').value = sel.scale; document.getElementById('propRot').value = Math.round((sel.rot||0)*180/Math.PI); document.getElementById('propOpacity').value = sel.opacity || 1; document.getElementById('effectShadow').value = sel.effects?.shadow||0; document.getElementById('effectStroke').value = sel.effects?.stroke||0; document.getElementById('effectGlow').value = sel.effects?.glow||0; document.getElementById('propColor').value = sel.color || '#ffffff'; rebuildLayersList(); }
+
+    document.getElementById('layerVisible').addEventListener('change', e=>{ const s=getSelected(); if(!s) return; s.visible = e.target.checked; drawPreview(); rebuildLayersList(); });
     document.getElementById('propX').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.x = parseFloat(e.target.value); drawPreview(); });
     document.getElementById('propY').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.y = parseFloat(e.target.value); drawPreview(); });
-    document.getElementById('propScale').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.scale = parseFloat(e.target.value); drawPreview(); updateLayerPropsUI(); });
-    document.getElementById('propRot').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.rot = parseFloat(e.target.value)*Math.PI/180; drawPreview(); updateLayerPropsUI(); });
+    document.getElementById('propScale').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.scale = parseFloat(e.target.value); updateLayerPropsUI(); drawPreview(); });
+    document.getElementById('propRot').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.rot = parseFloat(e.target.value)*Math.PI/180; updateLayerPropsUI(); drawPreview(); });
     document.getElementById('propOpacity').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.opacity = parseFloat(e.target.value); drawPreview(); });
-
-    ['filterBrightness','filterContrast','filterSaturate','filterBlur'].forEach(id=>{ document.getElementById(id).addEventListener('input', ()=>{ const s=getSelected(); if(!s) return; s.filters = s.filters || {}; s.filters.brightness = parseFloat(document.getElementById('filterBrightness').value); s.filters.contrast = parseFloat(document.getElementById('filterContrast').value); s.filters.saturate = parseFloat(document.getElementById('filterSaturate').value); s.filters.blur = parseFloat(document.getElementById('filterBlur').value); drawPreview(); }); });
-
-    document.getElementById('delLayer').addEventListener('click', ()=>{ const s=getSelected(); if(!s) return; if(!confirm('Remover camada selecionada?')) return; removeLayer(s.id); });
-    document.getElementById('centerLayer').addEventListener('click', ()=>{ const s=getSelected(); if(!s) return; s.x=EXPORT_SIZE/2; s.y=EXPORT_SIZE/2; updateLayerPropsUI(); drawPreview(); });
+    document.getElementById('effectShadow').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.effects = s.effects||{}; s.effects.shadow = parseFloat(e.target.value); drawPreview(); });
+    document.getElementById('effectStroke').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.effects = s.effects||{}; s.effects.stroke = parseFloat(e.target.value); drawPreview(); });
+    document.getElementById('effectGlow').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.effects = s.effects||{}; s.effects.glow = parseFloat(e.target.value); drawPreview(); });
+    document.getElementById('propColor').addEventListener('input', e=>{ const s=getSelected(); if(!s) return; s.color = e.target.value; drawPreview(); });
+    document.getElementById('delLayer').addEventListener('click', ()=>{ const s=getSelected(); if(!s) return; if(confirm('Remover camada selecionada?')) removeLayer(s.id); });
+    document.getElementById('centerLayer').addEventListener('click', ()=>{ const s=getSelected(); if(!s) return; s.x = EXPORT_SIZE/2; s.y = EXPORT_SIZE/2; updateLayerPropsUI(); drawPreview(); });
 
     document.getElementById('bringFront').addEventListener('click', ()=>{ const s=getSelected(); if(!s) return; bringFront(s.id); });
     document.getElementById('sendBack').addEventListener('click', ()=>{ const s=getSelected(); if(!s) return; sendBack(s.id); });
 
     // save/load/reset
-    document.getElementById('saveProj').addEventListener('click', ()=>{ // serialize layers and template
-      const payload = { templateData: null, layers: [] };
-      if(templateImg){ const c = document.createElement('canvas'); c.width = templateImg.width; c.height = templateImg.height; c.getContext('2d').drawImage(templateImg,0,0); payload.templateData = c.toDataURL(); }
-      payload.layers = layers.map(l=>{ if(l.type==='image'){ const c=document.createElement('canvas'); c.width=l.img.width; c.height=l.img.height; c.getContext('2d').drawImage(l.img,0,0); return {...l, imgData:c.toDataURL()}; } else return l; }); localStorage.setItem('ss_skin_v1', JSON.stringify(payload)); showToast('Projeto salvo localmente'); });
-    document.getElementById('loadProj').addEventListener('click', ()=>{ const raw = localStorage.getItem('ss_skin_v1'); if(!raw) return alert('Nenhum projeto salvo'); const data = JSON.parse(raw); layers = []; selectedId=null; const promises=[]; if(data.templateData){ const t=new Image(); const p = new Promise(res=>{ t.onload=res; t.src=data.templateData; }); p.then(()=>{ templateImg=t; }); promises.push(p); }
-      data.layers.forEach(s=>{ if(s.type==='image'){ const img=new Image(); const p=new Promise(res=>{ img.onload=()=>{ layers.push({...s,img}); res(); }; img.src=s.imgData; }); promises.push(p); } else { layers.push(s); } }); Promise.all(promises).then(()=>{ rebuildLayersList(); drawPreview(); showToast('Projeto carregado'); }); });
+    document.getElementById('saveProj').addEventListener('click', ()=>{ const payload = { templateData:null, layers: [] }; if(templateImg){ const c=document.createElement('canvas'); c.width=templateImg.width; c.height=templateImg.height; c.getContext('2d').drawImage(templateImg,0,0); payload.templateData = c.toDataURL(); } payload.layers = layers.map(l=>{ if(l.type==='image'){ const c=document.createElement('canvas'); c.width=l.meta?.w || l.img.width; c.height=l.meta?.h || l.img.height; c.getContext('2d').drawImage(l.img,0,0); return {...l, imgData:c.toDataURL()}; } else return l; }); localStorage.setItem('ss_skin_v2', JSON.stringify(payload)); showToast('Projeto salvo localmente'); });
+    document.getElementById('loadProj').addEventListener('click', ()=>{ const raw = localStorage.getItem('ss_skin_v2'); if(!raw) return alert('Nenhum projeto salvo'); const data = JSON.parse(raw); layers=[]; selectedId=null; const promises=[]; if(data.templateData){ const t=new Image(); const p=new Promise(res=>{ t.onload=res; t.src=data.templateData; }); p.then(()=>templateImg=t); promises.push(p); }
+      data.layers.forEach(s=>{ if(s.type==='image'){ const img=new Image(); const p=new Promise(res=>{ img.onload=()=>{ layers.push({...s,img}); res(); }; img.src=s.imgData; }); promises.push(p); } else layers.push(s); }); Promise.all(promises).then(()=>{ rebuildLayersList(); drawPreview(); showToast('Projeto carregado'); }); });
     document.getElementById('resetProj').addEventListener('click', ()=>{ if(!confirm('Resetar projeto?')) return; layers=[]; templateImg=null; selectedId=null; rebuildLayersList(); drawPreview(); showToast('Resetado'); });
 
     // export
@@ -258,17 +267,13 @@
     document.getElementById('exportClean').addEventListener('click', ()=>exportPNG(false)); document.getElementById('exportWith').addEventListener('click', ()=>exportPNG(true));
 
     // keyboard
-    window.addEventListener('keydown', (e)=>{ if(e.key==='e') exportPNG(false); if(e.key==='c'){ const s=getSelected(); if(s){ s.x=EXPORT_SIZE/2; s.y=EXPORT_SIZE/2; updateLayerPropsUI(); drawPreview(); } } if(e.key==='Delete'){ const s=getSelected(); if(s) removeLayer(s.id); if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); document.getElementById('saveProj').click(); } });
+    window.addEventListener('keydown', (e)=>{ if(e.key==='e') exportPNG(false); if(e.key==='c'){ const s=getSelected(); if(s){ s.x=EXPORT_SIZE/2; s.y=EXPORT_SIZE/2; updateLayerPropsUI(); drawPreview(); } } if(e.key==='Delete'){ const s=getSelected(); if(s) removeLayer(s.id); } if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); document.getElementById('saveProj').click(); } });
 
-    // initial placeholder
-    (function initPlaceholder(){ const ctxOff = offCtx; ctxOff.fillStyle='#071416'; ctxOff.fillRect(0,0,EXPORT_SIZE,EXPORT_SIZE); ctxOff.fillStyle='#072a2a'; ctxOff.fillRect(0,0,EXPORT_SIZE,180); ctxOff.fillStyle='#fff'; ctxOff.font='bold 160px Inter'; ctxOff.fillText('Super Sena', 160, 220); fitView(); })();
+    // placeholder
+    (function init(){ const ctxOff = offCtx; ctxOff.fillStyle='#071416'; ctxOff.fillRect(0,0,EXPORT_SIZE,EXPORT_SIZE); ctxOff.fillStyle='#072a2a'; ctxOff.fillRect(0,0,EXPORT_SIZE,180); ctxOff.fillStyle='#fff'; ctxOff.font='bold 160px Inter'; ctxOff.fillText('Super Sena', 160, 220); fitView(); rebuildLayersList(); })();
 
-    // initial UI rebuild
-    function selectLayer(id){ if(!id){ selectedId=null; updateLayerPropsUI(); drawPreview(); return; } selectedId = id; updateLayerPropsUI(); drawPreview(); }
-    function rebuildLayersList(){ updateLayerPropsUI(); const ul=document.getElementById('layersList'); ul.innerHTML=''; layers.forEach((l,idx)=>{ const li=document.createElement('li'); li.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div style="width:36px;height:24px;border-radius:4px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:12px">${l.type==='image'?'IMG':'T'}</div><div style="min-width:120px">${l.type==='image'?'Image '+(idx+1):(l.text||'Text')}</div></div><div style="display:flex;align-items:center"><button data-id="${l.id}" class="selBtn btn-ghost">Sel</button><button data-id="${l.id}" class="visBtn btn-ghost">${l.visible? '👁' : '🚫'}</button></div>`; ul.appendChild(li); li.querySelector('.selBtn').addEventListener('click', ()=>selectLayer(l.id)); li.querySelector('.visBtn').addEventListener('click', ()=>{ l.visible=!l.visible; rebuildLayersList(); drawPreview(); }); }); }
-
-    // expose some functions to window for debugging
-    window.editorAPI = { layers, addImageLayer, addTextLayer, addTemplateLayer, exportPNG, fitView };
+    // expose for debugging
+    window.editorAPI = {layers, addImageLayer, addTextLayer, addRectLayer, addCircleLayer, addLineLayer, addGradientLayer, addTemplateLayer, exportPNG};
 
   </script>
 </body>
